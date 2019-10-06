@@ -25,9 +25,13 @@ class AppScopeData {
 
   Future<UserScheduleInfo> userScheduleInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    final UserScheduleInfo scheduleData = UserScheduleInfo.fromMap(jsonDecode(
-        prefs.getString('scheduleData')));
-    return scheduleData;
+    try {
+      final prefData = jsonDecode(prefs.getString('scheduleData'));
+      final UserScheduleInfo scheduleData = UserScheduleInfo.fromMap(prefData);
+      return scheduleData;
+    } catch (error) {
+      return null;
+    }
   }
 
   Future setSchedule(Schedule schedule) async {
@@ -40,11 +44,13 @@ class AppScopeData {
 
   Future<Schedule> schedule() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    final prefSchedule = prefs.getString('schedule');
-    if (prefSchedule == null || prefSchedule == "")
+    try {
+      final prefSchedule = prefs.getString('schedule');
+      final Schedule schedule = Schedule.fromMap(json.decode(prefSchedule));
+      return schedule;
+    } catch (error) {
       return null;
-    final Schedule schedule = Schedule.fromMap(json.decode(prefSchedule));
-    return schedule;
+    }
   }
 }
 

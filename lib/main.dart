@@ -20,11 +20,13 @@ class MyApp extends StatelessWidget {
             return FutureBuilder(
                 future: AppScopeWidget.of(context).userScheduleInfo(),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState != ConnectionState.done) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  if (snapshot.data == null) return SelectGroupScreen();
-                  return SchedulePagesScreen();
+                  if (snapshot.connectionState == ConnectionState.waiting)
+                    return Container();
+                  if (snapshot.hasData)
+                      return SchedulePagesScreen();
+                  if (snapshot.data == null)
+                    return SelectGroupScreen();
+                  return Container();
                 },
               );
           })),
