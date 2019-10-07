@@ -7,6 +7,7 @@ import 'package:mitso/data/schedule_data.dart';
 import 'package:mitso/domain/parser.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:toast/toast.dart';
 import '../app_theme.dart';
 
 class SchedulePagesScreen extends StatefulWidget {
@@ -267,7 +268,6 @@ class SchedulePagesScreenState extends State<SchedulePagesScreen> {
             } catch (e) {
               week = 0;
             }
-            _refreshController.requestRefresh();
             Navigator.pop(context);
             refreshSchedule(week: week);
           }));
@@ -306,21 +306,27 @@ class SchedulePagesScreenState extends State<SchedulePagesScreen> {
   }
 
   refreshSchedule({int week = 0}) async {
-    getDates().then((weeks) {
-      weekList = weeks;
-    });
-    final days = await Parser()
-        .getWeek(futureInfo: AppScopeWidget.of(context).userScheduleInfo(),
-        week: week);
-    final newSchedule = Schedule(days: days);
-    final oldSchedule = await AppScopeWidget.of(context).schedule();
-    if (newSchedule != null) {
-      //ToDo: Добавить проврку действительно ли является новое расписание новым
-      _refreshController.refreshCompleted();
-      AppScopeWidget.of(context).setSchedule(newSchedule).then((_) {
-        setState(() {
-        });
+    _refreshController.requestRefresh();
+    try {
+      getDates().then((weeks) {
+        weekList = weeks;
       });
+      final days = await Parser()
+          .getWeek(futureInfo: AppScopeWidget.of(context).userScheduleInfo(),
+          week: week);
+      final newSchedule = Schedule(days: days);
+      final oldSchedule = await AppScopeWidget.of(context).schedule();
+      _refreshController.refreshCompleted();
+      if (newSchedule != null) {
+        //ToDo: Добавить проврку действительно ли является новое расписание новым
+        AppScopeWidget.of(context).setSchedule(newSchedule).then((_) {
+          setState(() {
+          });
+        });
+      }
+    } catch(error) {
+      _refreshController.refreshCompleted();
+      Toast.show("Не удалось обновить распсиание", context, duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
     }
   }
 
