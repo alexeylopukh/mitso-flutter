@@ -1,6 +1,7 @@
 import 'package:html/parser.dart';
 import 'package:html/dom.dart';
 import 'package:http/http.dart' as http;
+import 'package:mitso/data/person_info_data.dart';
 import 'package:mitso/data/schedule_data.dart';
 
 const KAF = 'Glavnaya+kafedra';
@@ -97,5 +98,29 @@ class Parser {
     }
 
     return days;
+  }
+
+  Future<PersonInfo> getAuth(String login, String password) async {
+    var url = 'https://student.mitso.by/login_stud.php';
+    Map<String, String> body = {'login':login, 'password':password};
+    try {
+      var html = await http.post(url, body: body);
+      var document = parse(html.body);
+      String name = document.querySelector('div.topmenu').text.trim();
+      String info = document.querySelector('div [id=what_section]').text.trim();
+      List<Element> balanceListEl = document.querySelectorAll('table td');
+      double balance = double.parse(balanceListEl[1].text);
+      double debt = double.parse(balanceListEl[3].text);
+      double fine = double.parse(balanceListEl[5].text);
+      return PersonInfo(
+          name: name,
+          info: info,
+          balance: balance,
+          debt: debt,
+          fine: fine
+      );
+    } catch (error) {
+      return null;
+    }
   }
 }

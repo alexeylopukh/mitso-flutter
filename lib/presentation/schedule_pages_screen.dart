@@ -41,6 +41,7 @@ class SchedulePagesScreenState extends State<SchedulePagesScreen> {
   @override
   void initState() {
     super.initState();
+    Parser().getAuth("9", "90358");
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: BACK_COLOR, statusBarIconBrightness: Brightness.dark));
     _hideButtonController = new ScrollController();

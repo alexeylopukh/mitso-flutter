@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:mitso/data/person_info_data.dart';
 import 'package:mitso/data/schedule_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -27,7 +28,7 @@ class AppScopeData {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       final prefData = jsonDecode(prefs.getString('scheduleData'));
-      final UserScheduleInfo scheduleData = UserScheduleInfo.fromMap(prefData);
+      final scheduleData = UserScheduleInfo.fromMap(prefData);
       return scheduleData;
     } catch (error) {
       return null;
@@ -46,11 +47,30 @@ class AppScopeData {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       final prefSchedule = prefs.getString('schedule');
-      final Schedule schedule = Schedule.fromMap(json.decode(prefSchedule));
+      final schedule = Schedule.fromMap(json.decode(prefSchedule));
       return schedule;
     } catch (error) {
       return null;
     }
+  }
+
+  Future<PersonInfo> personInfo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      final prefPersonInfo = prefs.getString('personInfo');
+      final personInfo = PersonInfo.fromMap(json.decode(prefPersonInfo));
+      return personInfo;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  Future setPersonInfo(PersonInfo personInfo) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (personInfo == null)
+      return prefs.remove('personInfo');
+    else
+      return prefs.setString('personInfo', json.encode(personInfo.toMap()));
   }
 }
 
