@@ -5,22 +5,23 @@ import 'package:flutter/services.dart';
 import 'package:mitso/data/app_scope_data.dart';
 import 'package:mitso/data/schedule_data.dart';
 import 'package:mitso/domain/parser.dart';
+import 'package:mitso/presentation/schedule_screen/schedule_screen_presenter.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:toast/toast.dart';
-import '../app_theme.dart';
+import '../../app_theme.dart';
 
-class SchedulePagesScreen extends StatefulWidget {
+class ScheduleScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return SchedulePagesScreenState();
+    return ScheduleScreenState();
   }
 }
 
 const double MAX_APPBAR_HEIGHT = 50;
 const double MIN_APPBAR_HEIGHT = 0;
 
-class SchedulePagesScreenState extends State<SchedulePagesScreen> {
+class ScheduleScreenState extends State<ScheduleScreen> {
+  ScheduleScreenPresenter presenter;
+
   final _pageController = PageController(
     initialPage: 0,
   );
@@ -34,14 +35,11 @@ class SchedulePagesScreenState extends State<SchedulePagesScreen> {
   double height = MAX_APPBAR_HEIGHT;
   double width = double.infinity;
 
-  List<String> weekList;
-
   int selectedPage = 0;
 
   @override
   void initState() {
     super.initState();
-    Parser().getAuth("9", "90358");
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: BACK_COLOR, statusBarIconBrightness: Brightness.dark));
     _hideButtonController = new ScrollController();
@@ -80,10 +78,10 @@ class SchedulePagesScreenState extends State<SchedulePagesScreen> {
             ),
             title: Column(
               children: <Widget>[
-                Text(getShortNameOfDayWeek(list[i].dayWeek)),
+                Text(presenter.getShortNameOfDayWeek(list[i].dayWeek)),
                 Padding(
                     padding: EdgeInsets.only(top: 2),
-                    child: Text(getDigitFromString(list[i].data),
+                    child: Text(presenter.getDigitFromString(list[i].data),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 16)))
@@ -94,43 +92,7 @@ class SchedulePagesScreenState extends State<SchedulePagesScreen> {
     return result;
   }
 
-  String getShortNameOfDayWeek(String longName) {
-    switch (longName.toLowerCase()) {
-      case 'понедельник':
-        return 'ПН';
-        break;
-      case 'вторник':
-        return 'ВТ';
-        break;
-      case 'среда':
-        return 'СР';
-        break;
-      case 'четверг':
-        return 'ЧТ';
-        break;
-      case 'пятница':
-        return 'ПТ';
-        break;
-      case 'суббота':
-        return 'СБ';
-        break;
-      case 'воскресенье':
-        return 'ВС';
-        break;
-      default:
-        return '';
-    }
-  }
 
-  String getDigitFromString(String text) {
-    List<String> list = text.split('');
-    try {
-      int.parse(list[0] + list[1]);
-      return list[0] + list[1];
-    } catch (e) {
-      return list[0];
-    }
-  }
 
   void pageChanged(int index) {
     setState(() {
@@ -255,22 +217,22 @@ class SchedulePagesScreenState extends State<SchedulePagesScreen> {
             borderRadius: new BorderRadius.only(
                 topLeft: const Radius.circular(40.0),
                 topRight: const Radius.circular(40.0)))));
-    for (int i = 0; i < weekList.length; i++) {
+    for (int i = 0; i < presenter.weekList.length; i++) {
       childrens.add(OutlineButton(
           borderSide: BorderSide(color: FONT_COLOR_2, width: 2),
           shape: StadiumBorder(),
-          child: Text(weekList[i], style: TextStyle(
+          child: Text(presenter.weekList[i], style: TextStyle(
               color: FONT_COLOR_2, fontSize: 18)),
           onPressed: () {
             int week;
             try {
               week = int.parse(
-                  getDigitFromString(weekList[i]));
+                  presenter.getDigitFromString(presenter.weekList[i]));
             } catch (e) {
               week = 0;
             }
             Navigator.pop(context);
-            refreshSchedule(week: week);
+            presenter.refreshSchedule(week: week);
           }));
     }
     return Column(
@@ -279,8 +241,8 @@ class SchedulePagesScreenState extends State<SchedulePagesScreen> {
   }
 
   Widget loadSchedule() {
-    getDates().then((weeks) {
-      weekList = weeks;
+    presenter.getWeeks().then((weeks) {
+      presenter.weekList = weeks;
     });
     _refreshController = RefreshController(initialRefresh: false);
     return Center(
@@ -300,43 +262,10 @@ class SchedulePagesScreenState extends State<SchedulePagesScreen> {
               return pageView(days, _pageController);
             }
             if (snapshot.hasError)
-              return getErrorDialog(context);
+              presenter.createErrorDialog(context);
             return Container();
           })
     );
-  }
-
-  refreshSchedule({int week = 0}) async {
-    _refreshController.requestRefresh();
-    try {
-      getDates().then((weeks) {
-        weekList = weeks;
-      });
-      final days = await Parser()
-          .getWeek(futureInfo: AppScopeWidget.of(context).userScheduleInfo(),
-          week: week);
-      final newSchedule = Schedule(days: days);
-      final oldSchedule = await AppScopeWidget.of(context).schedule();
-      _refreshController.refreshCompleted();
-      if (newSchedule != null) {
-        //ToDo: Добавить проврку действительно ли является новое расписание новым
-        AppScopeWidget.of(context).setSchedule(newSchedule).then((_) {
-          setState(() {
-          });
-        });
-      }
-    } catch(error) {
-      _refreshController.refreshCompleted();
-      Toast.show("Не удалось обновить распсиание", context, duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-    }
-  }
-
-  Future<List<String>> getDates() async {
-    final userInfo = await AppScopeWidget.of(context).userScheduleInfo();
-    final list = await Parser().getDateList(
-        userInfo.form, userInfo.fak,
-        userInfo.kurs, userInfo.group);
-    return list;
   }
 
   Widget pageView(List<Day> list, PageController pageController) {
@@ -357,7 +286,7 @@ class SchedulePagesScreenState extends State<SchedulePagesScreen> {
         Expanded(
           child: SmartRefresher(
             controller: _refreshController,
-            onRefresh: refreshSchedule,
+            onRefresh: presenter.onRefresh(),
             header: CustomHeader(
                 builder: (BuildContext context, RefreshStatus status) {
                   if (status == RefreshStatus.idle) return Container();
@@ -479,41 +408,17 @@ class SchedulePagesScreenState extends State<SchedulePagesScreen> {
     );
   }
 
-  Widget getErrorDialog(context) {
-    return AlertDialog(
-      elevation: 4,
-      title: Text('Ошибка'),
-      content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Text('Не удалось получить данные.'),
-              Text('Рекомендуем посетить сайт и проверить расписание вручную.'),
-              Text('А также Ваше интернет-соединение.'),
-            ],
-          )),
-      actions: <Widget>[
-        FlatButton(
-          child: Text('Посетить сайт'),
-          onPressed: () {
-            _launchURL("https://www.mitso.by/schedule/search");
-          },
-        ),
-        FlatButton(
-          child: Text('Обновить'),
-          onPressed: () {
-            setState(() {
-
-            });
-          },
-        ),
-      ],);
+  forceRefresh() {
+    _refreshController.requestRefresh();
   }
 
-  _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
+  completeRefresh() {
+    _refreshController.refreshCompleted();
   }
+
+  update(){
+    setState(() {});
+  }
+
+
 }

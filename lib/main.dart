@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mitso/data/app_scope_data.dart';
-import 'package:mitso/presentation/schedule_pages_screen.dart';
+import 'package:mitso/presentation/schedule_screen/schedule_pages_screen.dart';
 import 'package:mitso/presentation/select_group_screen/select_group_screen.dart';
 
 import 'app_theme.dart';
@@ -23,7 +22,7 @@ class MyApp extends StatelessWidget {
                   if (snapshot.connectionState == ConnectionState.waiting)
                     return Container();
                   if (snapshot.hasData)
-                      return SchedulePagesScreen();
+                      return ScheduleScreen();
                   if (snapshot.data == null)
                     return SelectGroupScreen();
                   return Container();
