@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:mitso/data/app_scope_data.dart';
 import 'package:mitso/data/schedule_data.dart';
 import 'package:mitso/domain/parser.dart';
+import 'package:mitso/presentation/schedule_screen/PageItemWidget.dart';
 import 'package:mitso/presentation/schedule_screen/schedule_screen_presenter.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../app_theme.dart';
@@ -22,9 +23,7 @@ const double MIN_APPBAR_HEIGHT = 0;
 class ScheduleScreenState extends State<ScheduleScreen> {
   ScheduleScreenPresenter presenter;
 
-  final _pageController = PageController(
-    initialPage: 0,
-  );
+  PageController _pageController;
 
   RefreshController _refreshController;
 
@@ -58,6 +57,10 @@ class ScheduleScreenState extends State<ScheduleScreen> {
         }
       }
     });
+
+    _pageController = PageController(
+      initialPage: 0,
+    );
     _pageController.addListener(() {
       if (height != MAX_APPBAR_HEIGHT)
         setState(() {
@@ -81,7 +84,7 @@ class ScheduleScreenState extends State<ScheduleScreen> {
                 Text(presenter.getShortNameOfDayWeek(list[i].dayWeek)),
                 Padding(
                     padding: EdgeInsets.only(top: 2),
-                    child: Text(presenter.getDigitFromString(list[i].data),
+                    child: Text(presenter.getDigitFromString(list[i].data).toString(),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 16)))
@@ -91,8 +94,6 @@ class ScheduleScreenState extends State<ScheduleScreen> {
     }
     return result;
   }
-
-
 
   void pageChanged(int index) {
     setState(() {
@@ -110,6 +111,10 @@ class ScheduleScreenState extends State<ScheduleScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (presenter == null) {
+      presenter = ScheduleScreenPresenter(
+          this, AppScopeWidget.of(context), Parser());
+    }
     return Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: AnimatedOpacity(
@@ -226,8 +231,7 @@ class ScheduleScreenState extends State<ScheduleScreen> {
           onPressed: () {
             int week;
             try {
-              week = int.parse(
-                  presenter.getDigitFromString(presenter.weekList[i]));
+              week = presenter.getDigitFromString(presenter.weekList[i]);
             } catch (e) {
               week = 0;
             }
@@ -241,14 +245,10 @@ class ScheduleScreenState extends State<ScheduleScreen> {
   }
 
   Widget loadSchedule() {
-    presenter.getWeeks().then((weeks) {
-      presenter.weekList = weeks;
-    });
     _refreshController = RefreshController(initialRefresh: false);
     return Center(
       child: FutureBuilder(
-          future: Parser()
-              .getWeek(futureInfo: AppScopeWidget.of(context).userScheduleInfo()),
+          future: presenter.loadSchedule(),
           builder: (BuildContext context, AsyncSnapshot<List<Day>> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting)
               return Container(
@@ -316,7 +316,7 @@ class ScheduleScreenState extends State<ScheduleScreen> {
                 }
             ),
             child: PageView.builder(
-              itemBuilder: (context, position) => page(list[position]),
+              itemBuilder: (context, position) => PageItemWidget(list[position]),
               controller: pageController,
               itemCount: list.length,
               onPageChanged: (index) => pageChanged(index),
@@ -327,86 +327,7 @@ class ScheduleScreenState extends State<ScheduleScreen> {
     );
   }
 
-  Widget getCardItem(Lesson lesson) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 4, right: 4, bottom: 3),
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        elevation: 1,
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: <Widget>[
-                Text(
-                  lesson.time,
-                  style: TextStyle(
-                      fontFamily: 'Montserrat-bold',
-                      color: FONT_COLOR_2,
-                      fontSize: 16),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 2),
-                  child: Text(lesson.lesson,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontFamily: 'Montserrat-Light',
-                          color: FONT_COLOR_2,
-                          fontSize: 13)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 3),
-                  child: Text(
-                    lesson.aud,
-                    style: TextStyle(
-                        fontFamily: 'Montserrat-Bold',
-                        color: FONT_COLOR_2,
-                        fontSize: 14),
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 
-  Widget page(Day day) {
-    return Container(
-      decoration: BoxDecoration(color: BACK_COLOR),
-      child: Column(
-        children: <Widget>[
-          Expanded(
-            child: day.countLessons == 0
-                ? Container(
-                    child: Center(
-                        child: Text(
-                    "Занятия отсутсвуют",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,
-                    color: FONT_COLOR_2),
-                  )))
-                : ListView.builder(
-                    padding: EdgeInsets.zero,
-                    controller: _hideButtonController,
-                    shrinkWrap: true,
-                    itemBuilder: (context, position) {
-                      if (day.lessons[position].aud != null)
-                        return getCardItem(day.lessons[position]);
-                      else
-                        return Container();
-                    },
-                    itemCount: day.lessons.length,
-                  ),
-          )
-        ],
-      ),
-    );
-  }
 
   forceRefresh() {
     _refreshController.requestRefresh();

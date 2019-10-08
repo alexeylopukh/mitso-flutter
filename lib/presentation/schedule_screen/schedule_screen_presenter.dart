@@ -21,14 +21,15 @@ class ScheduleScreenPresenter{
   refreshSchedule({int week = 0}) async {
     view.forceRefresh();
     try {
-      getWeeks().then((weeks) {
+      loadWeeks().then((weeks) {
         weekList = weeks;
       });
+      final userInfo = await appScopeData.userScheduleInfo();
       final days = await Parser()
-          .getWeek(futureInfo: appScopeData.userScheduleInfo(),
+          .getWeek(userInfo: userInfo,
           week: week);
       final newSchedule = Schedule(days: days);
-      final oldSchedule = await appScopeData.schedule();
+//      final oldSchedule = await appScopeData.schedule();
       view.completeRefresh();
       if (newSchedule != null) {
         //ToDo: Добавить проврку действительно ли является новое расписание новым
@@ -42,7 +43,7 @@ class ScheduleScreenPresenter{
     }
   }
 
-  Future<List<String>> getWeeks() async {
+  Future<List<String>> loadWeeks() async {
     final userInfo = await appScopeData.userScheduleInfo();
     final list = await Parser().getDateList(
         userInfo.form, userInfo.fak,
@@ -91,6 +92,17 @@ class ScheduleScreenPresenter{
     }
   }
 
+  Future<List<Day>> loadSchedule() async {
+    updateWeeks();
+    final userInfo = await appScopeData.userScheduleInfo();
+    final result = await parser.getWeek(userInfo: userInfo);
+    return result;
+  }
+
+  updateWeeks() async {
+    weekList = await loadWeeks();
+  }
+
   String getShortNameOfDayWeek(String longName) {
     switch (longName.toLowerCase()) {
       case 'понедельник':
@@ -119,13 +131,13 @@ class ScheduleScreenPresenter{
     }
   }
 
-  String getDigitFromString(String text) {
+  int getDigitFromString(String text) {
     List<String> list = text.split('');
     try {
       int.parse(list[0] + list[1]);
-      return list[0] + list[1];
+      return int.parse(list[0] + list[1]);
     } catch (e) {
-      return list[0];
+      return int.parse(list[0]); //ToDo: переписать для неограниченного кол-ва чисел
     }
   }
 }

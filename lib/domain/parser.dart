@@ -62,12 +62,9 @@ class Parser {
     return resultList;
   }
 
-  Future<List<Day>> getWeek({Future<UserScheduleInfo> futureInfo, int week = 0}) async {
-    var info = await futureInfo.then((value){
-      return value;
-    });
+  Future<List<Day>> getWeek({UserScheduleInfo userInfo, int week = 0}) async {
     var url =
-        'https://mitso.by/schedule/${info.form}/${info.fak}/${info.kurs}/${info.group}/$week';
+        'https://mitso.by/schedule/${userInfo.form}/${userInfo.fak}/${userInfo.kurs}/${userInfo.group}/$week';
     var html = await http.get(url);
     var document = parse(html.body);
     List<Element> dateEl = document.querySelectorAll('div.rp-ras-data');
