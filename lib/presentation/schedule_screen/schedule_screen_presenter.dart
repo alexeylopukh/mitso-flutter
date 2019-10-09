@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mitso/data/app_scope_data.dart';
 import 'package:mitso/data/schedule_data.dart';
-import 'package:mitso/domain/parser.dart';
+import 'package:mitso/network/parser.dart';
 import 'package:mitso/presentation/schedule_screen/schedule_pages_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 

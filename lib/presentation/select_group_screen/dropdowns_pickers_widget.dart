@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mitso/app_theme.dart';
-import 'package:mitso/domain/parser.dart';
+import 'package:mitso/network/parser.dart';
 
 const FAK_HINT = 'Факультет';
 const FORM_HINT = 'Форма обучения';
