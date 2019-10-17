@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Mitso Schedule',
+        title: 'МИТСО - Рассписание',
         home: Container(
           color: BACK_COLOR,
           child: AppScopeWidget(child: Builder(builder: (context) {

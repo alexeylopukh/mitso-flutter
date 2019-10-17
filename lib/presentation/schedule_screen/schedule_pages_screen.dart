@@ -286,7 +286,7 @@ class ScheduleScreenState extends State<ScheduleScreen> {
         Expanded(
           child: SmartRefresher(
             controller: _refreshController,
-            onRefresh: presenter.onRefresh(),
+            onRefresh: presenter.onRefresh,
             header: CustomHeader(
                 builder: (BuildContext context, RefreshStatus status) {
                   if (status == RefreshStatus.idle) return Container();
@@ -316,7 +316,7 @@ class ScheduleScreenState extends State<ScheduleScreen> {
                 }
             ),
             child: PageView.builder(
-              itemBuilder: (context, position) => PageItemWidget(list[position]),
+              itemBuilder: (context, position) => PageItemWidget(day: list[position], controller: _hideButtonController,),
               controller: pageController,
               itemCount: list.length,
               onPageChanged: (index) => pageChanged(index),
