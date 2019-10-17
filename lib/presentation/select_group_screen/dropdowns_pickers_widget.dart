@@ -66,7 +66,7 @@ class DropDownsPickersState extends State<DropDownsPickers> {
                           style: textStyle,
                           icon: icon,
                           value: widget.fakulty == null ? null : widget.fakulty,
-                          hint: Text(FAK_HINT, style: hintStyle),
+                          hint: Center(child: Text(FAK_HINT, style: hintStyle),),
                           onChanged: (String value) {
                             setState(() {
                               widget.fakulty = value;
@@ -107,7 +107,7 @@ class DropDownsPickersState extends State<DropDownsPickers> {
                                   icon: icon,
                                   value:
                                       widget.form == null ? null : widget.form,
-                                  hint: Text(FORM_HINT, style: hintStyle),
+                                  hint: Center(child: Text(FORM_HINT, style: hintStyle)),
                                   onChanged: (String value) {
                                     setState(() {
                                       widget.form = value;
@@ -151,7 +151,7 @@ class DropDownsPickersState extends State<DropDownsPickers> {
                                   value: widget.cours == null
                                       ? null
                                       : widget.cours,
-                                  hint: Text(KURS_HINT, style: hintStyle),
+                                  hint: Center(child: Text(KURS_HINT, style: hintStyle)),
                                   onChanged: (String value) {
                                     setState(() {
                                       widget.cours = value;
@@ -197,10 +197,10 @@ class DropDownsPickersState extends State<DropDownsPickers> {
                                   value: widget.group == null
                                       ? null
                                       : widget.group,
-                                  hint: Text(
-                                    KURS_HINT,
+                                  hint: Center(child: Text(
+                                    GROUP_HINT,
                                     style: hintStyle,
-                                  ),
+                                  )),
                                   onChanged: (String value) {
                                     setState(() {
                                       widget.group = value;

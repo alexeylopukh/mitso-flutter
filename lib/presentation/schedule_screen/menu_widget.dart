@@ -81,7 +81,9 @@ class MenuWidgetState extends State<MenuWidget> {
     return Column(
       children: <Widget>[
         Text(personInfo.name),
-        Text('Баланс: ${personInfo.balance}')
+        Text('Баланс: ${personInfo.balance}'),
+        Text('Долг: ${personInfo.debt}'),
+        Text('Пеня: ${personInfo.fine}'),
       ],
     );
   }

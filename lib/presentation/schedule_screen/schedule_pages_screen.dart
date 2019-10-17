@@ -250,7 +250,6 @@ class ScheduleScreenState extends State<ScheduleScreen> {
   }
 
   Widget loadSchedule() {
-    _refreshController = RefreshController(initialRefresh: false);
     return Center(
       child: FutureBuilder(
           future: presenter.loadSchedule(),
@@ -333,7 +332,6 @@ class ScheduleScreenState extends State<ScheduleScreen> {
   }
 
 
-
   forceRefresh() {
     _refreshController.requestRefresh();
   }
@@ -345,6 +343,4 @@ class ScheduleScreenState extends State<ScheduleScreen> {
   update(){
     setState(() {});
   }
-
-
 }

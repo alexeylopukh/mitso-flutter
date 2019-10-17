@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mitso/data/app_scope_data.dart';
-import 'package:mitso/presentation/auth_screen.dart';
+import 'package:mitso/presentation/auth_screen/auth_screen.dart';
 import 'package:mitso/presentation/schedule_screen/schedule_pages_screen.dart';
 import 'package:mitso/presentation/select_group_screen/select_group_screen.dart';
 

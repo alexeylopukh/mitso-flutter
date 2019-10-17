@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mitso/data/app_scope_data.dart';
 import 'package:mitso/data/schedule_data.dart';
 import 'package:mitso/presentation/select_group_screen/dropdowns_pickers_widget.dart';
@@ -71,7 +70,6 @@ class SelectGroupScreen extends StatelessWidget {
                       ));
                   return;
                 }
-
                 AppScopeWidget.of(context)
                     .setUserScheduleInfo(UserScheduleInfo(
                         form: form, fak: fak, kurs: kurs, group: group));
