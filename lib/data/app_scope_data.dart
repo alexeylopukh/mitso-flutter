@@ -65,12 +65,18 @@ class AppScopeData {
     }
   }
 
-  Future setPersonInfo(PersonInfo personInfo) async {
+  Future setPersonInfo(PersonInfo personInfo, {bool auth = false}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (personInfo == null)
-      return prefs.remove('personInfo');
+      return prefs.remove('personInfo').then((_) {
+        if (auth)
+          state.setState(() => {});
+      });
     else
-      return prefs.setString('personInfo', json.encode(personInfo.toMap()));
+      prefs.setString('personInfo', json.encode(personInfo.toMap())).then((_) {
+        if (auth)
+          state.setState(() => {});
+      });
   }
 }
 
@@ -94,8 +100,7 @@ class AppScopeWidget extends StatefulWidget {
 
   static AppScopeData of(BuildContext context) {
     return (context.inheritFromWidgetOfExactType(_AppScopeWidget)
-    as _AppScopeWidget)
-        .data;
+    as _AppScopeWidget).data;
   }
 
   @override

@@ -15,9 +15,6 @@ class SelectGroupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dropDownKey = new GlobalKey<DropDownsPickersState>();
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: MAIN_COLOR_2,
-        statusBarIconBrightness: Brightness.light));
     return Scaffold(
         key: _key,
         body: Padding(

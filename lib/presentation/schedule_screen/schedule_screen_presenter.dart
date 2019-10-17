@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mitso/data/app_scope_data.dart';
+import 'package:mitso/data/person_info_data.dart';
 import 'package:mitso/data/schedule_data.dart';
 import 'package:mitso/network/parser.dart';
 import 'package:mitso/presentation/schedule_screen/schedule_pages_screen.dart';
@@ -9,8 +10,15 @@ class ScheduleScreenPresenter{
   ScheduleScreenState view;
   AppScopeData appScopeData;
   Parser parser;
-
   List<String> weekList;
+  UserScheduleInfo _userScheduleInfo;
+
+  Future<UserScheduleInfo> get userScheduleInfo async {
+    if (_userScheduleInfo == null)
+      _userScheduleInfo = await appScopeData.userScheduleInfo();
+    return _userScheduleInfo;
+  }
+
 
   ScheduleScreenPresenter(this.view, this.appScopeData, this.parser);
 
@@ -72,6 +80,12 @@ class ScheduleScreenPresenter{
                 child: Text('Посетить сайт'),
                 onPressed: () {
                   _launchURL("https://www.mitso.by/schedule/search");
+                },
+              ),
+              FlatButton(
+                child: Text('Сменить группу'),
+                onPressed: () {
+                  AppScopeWidget.of(context).setUserScheduleInfo(null);
                 },
               ),
               FlatButton(

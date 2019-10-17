@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:mitso/data/app_scope_data.dart';
 import 'package:mitso/data/schedule_data.dart';
 import 'package:mitso/network/parser.dart';
+import 'package:mitso/presentation/schedule_screen/menu_widget.dart';
 import 'package:mitso/presentation/schedule_screen/page_item_widget.dart';
 import 'package:mitso/presentation/schedule_screen/schedule_screen_presenter.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -173,7 +174,11 @@ class ScheduleScreenState extends State<ScheduleScreen> {
                         Icons.menu,
                         color: FONT_COLOR_2,
                       ),
-                      onPressed: () {
+                      onPressed: () async {
+                        final userScheduleInfo = await presenter
+                            .userScheduleInfo;
+                        final personInfo = await presenter.appScopeData
+                            .personInfo();
                         showModalBottomSheet(
                             context: context,
                             shape: RoundedRectangleBorder(
@@ -182,10 +187,10 @@ class ScheduleScreenState extends State<ScheduleScreen> {
                                   topRight: Radius.circular(20)),
                             ),
                             builder: ((_) {
-                              return Container(
-                                height: 200,
-
-                              );
+                              return MenuWidget(
+                                  presenter: this.presenter,
+                                  userScheduleInfo: userScheduleInfo,
+                                  personInfo: personInfo);
                             })
                         );
                       },
