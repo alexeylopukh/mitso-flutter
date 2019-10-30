@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:mitso/ad_manager.dart';
 import 'package:mitso/data/person_info_data.dart';
@@ -17,9 +18,19 @@ class AppScopeData {
 
   FirebaseAnalyticsHelper get analyticsHelper => _analyticsHelper;
 
+  RemoteConfig remoteConfig;
+
   AppScopeData({@required this.state}) {
+    _loadRemoteConfig();
     _analyticsHelper = FirebaseAnalyticsHelper();
     _adManager = AdManager();
+  }
+
+  _loadRemoteConfig() async {
+    remoteConfig = await RemoteConfig.instance;
+    remoteConfig.setConfigSettings(RemoteConfigSettings(debugMode: true));
+    await remoteConfig.activateFetched();
+    print(remoteConfig.getAll());
   }
 
   Future setUserScheduleInfo(UserScheduleInfo userScheduleInfo) async {

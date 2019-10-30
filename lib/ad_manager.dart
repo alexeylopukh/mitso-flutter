@@ -10,10 +10,11 @@ class AdManager {
 
   MobileAdTargetingInfo targetingInfo;
 
-  StreamController<bool> isMainBannerShowed = StreamController<bool>();
+  StreamController<bool> isMainBannerShowedStream = StreamController<bool>();
+  bool isMainBannerShowed = false;
 
   AdManager() {
-    isMainBannerShowed.add(false);
+    isMainBannerShowedStream.add(false);
     FirebaseAdMob.instance.initialize(appId: _appId);
 
     targetingInfo = MobileAdTargetingInfo(
@@ -24,14 +25,21 @@ class AdManager {
   }
 
   showMainBanner() {
+    if (mainBanner != null) {
+      return;
+    }
+    isMainBannerShowed = true;
     mainBanner = BannerAd(
         adUnitId: _mainBlockId,
         size: AdSize.smartBanner,
         targetingInfo: targetingInfo,
-        listener: (MobileAdEvent event) {
+        listener: (MobileAdEvent event) async {
           switch (event) {
             case MobileAdEvent.loaded:
-              isMainBannerShowed.add(true);
+              if (!isMainBannerShowed)
+                hideMainBanner();
+              else
+                isMainBannerShowedStream.add(true);
               break;
             case MobileAdEvent.failedToLoad:
               // TODO: Handle this case.
@@ -61,9 +69,11 @@ class AdManager {
   }
 
   hideMainBanner() {
-    mainBanner.dispose().then((_) {
-      isMainBannerShowed.add(false);
+    Future.delayed(const Duration(milliseconds: 500), () {
+      isMainBannerShowed = false;
+      isMainBannerShowedStream.add(false);
+      mainBanner?.dispose();
+      mainBanner = null;
     });
-    mainBanner = null;
   }
 }

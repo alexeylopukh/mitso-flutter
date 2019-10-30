@@ -32,7 +32,7 @@ class ScheduleScreenPresenter {
     });
 
     isAdShowed = false;
-    appScopeData.adManager.isMainBannerShowed.stream.listen((isShowed) {
+    appScopeData.adManager.isMainBannerShowedStream.stream.listen((isShowed) {
       isAdShowed = isShowed;
       view.update();
     });
