@@ -11,12 +11,12 @@ class Schedule {
   });
 
   factory Schedule.fromMap(Map<String, dynamic> json) => Schedule(
-    days: List<Day>.from(json["days"].map((x) => Day.fromMap(x))),
-  );
+        days: List<Day>.from(json["days"].map((x) => Day.fromMap(x))),
+      );
 
   Map<String, dynamic> toMap() => {
-    "days": List<dynamic>.from(days.map((x) => x.toMap())),
-  };
+        "days": List<dynamic>.from(days.map((x) => x.toMap())),
+      };
 }
 
 class Day {
@@ -44,22 +44,21 @@ class Day {
   }
 
   factory Day.fromMap(Map<String, dynamic> json) => Day(
-    json["data"],
-    json["dayWeek"],
-    List<Lesson>.from(json["lessons"].map((x) => Lesson.fromMap(x))),
-  );
+        json["data"],
+        json["dayWeek"],
+        List<Lesson>.from(json["lessons"].map((x) => Lesson.fromMap(x))),
+      );
 
   Map<String, dynamic> toMap() => {
-    "data": data,
-    "dayWeek": dayWeek,
-    "lessons": List<dynamic>.from(lessons.map((x) => x.toMap())),
-  };
+        "data": data,
+        "dayWeek": dayWeek,
+        "lessons": List<dynamic>.from(lessons.map((x) => x.toMap())),
+      };
 
-  int _getCountLessons(){
+  int _getCountLessons() {
     int result = 0;
     for (int i = 0; i < lessons.length; i++) {
-      if (lessons[i].aud != null)
-        result++;
+      if (lessons[i].aud != null) result++;
     }
     return result;
   }
@@ -77,28 +76,23 @@ class Lesson {
   });
 
   factory Lesson.fromMap(Map<String, dynamic> json) => Lesson(
-    time: json["time"],
-    lesson: json["lesson"],
-    aud: json["aud"],
-  );
+        time: json["time"],
+        lesson: json["lesson"],
+        aud: json["aud"],
+      );
 
   Map<String, dynamic> toMap() => {
-    "time": time,
-    "lesson": lesson,
-    "aud": aud,
-  };
+        "time": time,
+        "lesson": lesson,
+        "aud": aud,
+      };
 }
 
 class UserScheduleInfo {
-
   final String form;
   final String fak;
   final String kurs;
   final String group;
-
-
-//<editor-fold desc="Data Methods" defaultstate="collapsed">
-
 
   const UserScheduleInfo({
     @required this.form,
@@ -107,26 +101,19 @@ class UserScheduleInfo {
     @required this.group,
   });
 
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          (other is UserScheduleInfo &&
-              runtimeType == other.runtimeType &&
-              form == other.form &&
-              fak == other.fak &&
-              kurs == other.kurs &&
-              group == other.group
-          );
-
+      (other is UserScheduleInfo &&
+          runtimeType == other.runtimeType &&
+          form == other.form &&
+          fak == other.fak &&
+          kurs == other.kurs &&
+          group == other.group);
 
   @override
   int get hashCode =>
-      form.hashCode ^
-      fak.hashCode ^
-      kurs.hashCode ^
-      group.hashCode;
-
+      form.hashCode ^ fak.hashCode ^ kurs.hashCode ^ group.hashCode;
 
   @override
   String toString() {
@@ -137,7 +124,6 @@ class UserScheduleInfo {
         ' group: $group,' +
         '}';
   }
-
 
   UserScheduleInfo copyWith({
     String form,
@@ -152,7 +138,6 @@ class UserScheduleInfo {
       group: group ?? this.group,
     );
   }
-
 
   Map<String, dynamic> toMap() {
     return {
@@ -171,7 +156,4 @@ class UserScheduleInfo {
       group: map['group'] as String,
     );
   }
-
-
-//</editor-fold>
 }

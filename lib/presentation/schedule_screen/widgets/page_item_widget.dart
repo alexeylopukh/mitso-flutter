@@ -5,9 +5,13 @@ import 'package:mitso/data/schedule_data.dart';
 
 class PageItemWidget extends StatelessWidget {
   final Day day;
-  final ScrollController controller;
+//  final ScrollController controller;
 
-  PageItemWidget({@required this.day, @required this.controller});
+  PageItemWidget({
+    @required this.day,
+//    @required this.controller
+  });
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -17,26 +21,27 @@ class PageItemWidget extends StatelessWidget {
           Expanded(
             child: day.countLessons == 0
                 ? Container(
-                child: Center(
-                    child: Text(
-                      "Занятия отсутсвуют",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,
-                          color: FONT_COLOR_2),
-                    )))
+                    child: Center(
+                        child: Text(
+                    "Занятия отсутсвуют",
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: FONT_COLOR_2),
+                  )))
                 : ListView.builder(
-              controller: controller,
-              padding: EdgeInsets.zero,
-              //controller: _hideButtonController,
-              shrinkWrap: true,
-              itemBuilder: (context, position) {
-                if (day.lessons[position].aud != null)
-                  return getCardItem(day.lessons[position]);
-                else
-                  return Container();
-              },
-              itemCount: day.lessons.length,
-            ),
-          )
+//                    controller: controller,
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    itemBuilder: (context, position) {
+                      if (day.lessons[position].aud != null)
+                        return getCardItem(day.lessons[position]);
+                      else
+                        return Container();
+                    },
+                    itemCount: day.lessons.length,
+                  ),
+          ),
         ],
       ),
     );
@@ -90,5 +95,4 @@ class PageItemWidget extends StatelessWidget {
       ),
     );
   }
-
 }

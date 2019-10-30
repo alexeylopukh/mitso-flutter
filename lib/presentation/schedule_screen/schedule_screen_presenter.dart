@@ -1,26 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:mitso/data/app_scope_data.dart';
-import 'package:mitso/data/person_info_data.dart';
+import 'package:mitso/data/notification_manager.dart';
 import 'package:mitso/data/schedule_data.dart';
-import 'package:mitso/network/parser.dart';
-import 'package:mitso/presentation/schedule_screen/schedule_pages_screen.dart';
+import 'package:mitso/interactor/parser.dart';
+import 'package:mitso/presentation/schedule_screen/schedule_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ScheduleScreenPresenter{
-  ScheduleScreenState view;
-  AppScopeData appScopeData;
+class ScheduleScreenPresenter {
+  final ScheduleScreenWidgetState view;
+  final AppScopeData appScopeData;
   Parser parser;
   List<String> weekList;
   UserScheduleInfo _userScheduleInfo;
+  Schedule schedule;
+  ScheduleStatus scheduleStatus = ScheduleStatus.LoadFromStorage;
+
+  bool isAdShowed;
 
   Future<UserScheduleInfo> get userScheduleInfo async {
-    if (_userScheduleInfo == null)
-      _userScheduleInfo = await appScopeData.userScheduleInfo();
-    return _userScheduleInfo;
+    return _userScheduleInfo = await appScopeData.userScheduleInfo();
   }
 
+  ScheduleScreenPresenter(this.view, this.appScopeData, this.parser) {
+    appScopeData.schedule().then((schedule) {
+      if (schedule != null) {
+        this.schedule = schedule;
+        scheduleStatus = ScheduleStatus.Loaded;
+        view.update();
+      } else
+        loadSchedule();
+    });
 
-  ScheduleScreenPresenter(this.view, this.appScopeData, this.parser);
+    isAdShowed = false;
+    appScopeData.adManager.isMainBannerShowed.stream.listen((isShowed) {
+      isAdShowed = isShowed;
+      view.update();
+    });
+
+    appScopeData.adManager.showMainBanner();
+  }
 
   onRefresh() {
     refreshSchedule();
@@ -28,35 +46,30 @@ class ScheduleScreenPresenter{
 
   refreshSchedule({int week = 0}) async {
     view.forceRefresh();
-    try {
-      loadWeeks().then((weeks) {
-        weekList = weeks;
-      });
-      final userInfo = await appScopeData.userScheduleInfo();
-      final days = await Parser()
-          .getWeek(userInfo: userInfo,
-          week: week);
-      final newSchedule = Schedule(days: days);
-//      final oldSchedule = await appScopeData.schedule();
-      view.completeRefresh();
-      if (newSchedule != null) {
-        //ToDo: Добавить проврку действительно ли является новое расписание новым
-        appScopeData.setSchedule(newSchedule).then((_) {
-          view.update();
-        });
-      }
-    } catch(error) {
-      view.completeRefresh();
-//      Toast.show("Не удалось обновить распсиание", context, duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    loadWeeks();
+    updPerson();
+    final userInfo = await appScopeData.userScheduleInfo();
+    final newSchedule = await Parser()
+        .getSchedule(userInfo: userInfo, week: week)
+        .catchError((error) => print(error));
+    view.completeRefresh();
+    if (newSchedule != null) {
+      schedule = newSchedule;
+      if (week == 0) appScopeData.setSchedule(newSchedule);
+      view.update();
     }
   }
 
-  Future<List<String>> loadWeeks() async {
-    final userInfo = await appScopeData.userScheduleInfo();
-    final list = await Parser().getDateList(
-        userInfo.form, userInfo.fak,
-        userInfo.kurs, userInfo.group);
-    return list;
+  loadWeeks() async {
+    final userScheduleInfo = await appScopeData.userScheduleInfo();
+    var list = await parser
+        .getWeekList(
+            form: userScheduleInfo.form,
+            fak: userScheduleInfo.fak,
+            kurs: userScheduleInfo.kurs,
+            group: userScheduleInfo.group)
+        .catchError((error) => print(error));
+    weekList = list;
   }
 
   createErrorDialog(BuildContext context) {
@@ -69,12 +82,13 @@ class ScheduleScreenPresenter{
             title: Text('Ошибка'),
             content: SingleChildScrollView(
                 child: ListBody(
-                  children: <Widget>[
-                    Text('Не удалось получить данные.'),
-                    Text('Рекомендуем посетить сайт и проверить расписание вручную.'),
-                    Text('А также Ваше интернет-соединение.'),
-                  ],
-                )),
+              children: <Widget>[
+                Text('Не удалось получить данные.'),
+                Text(
+                    'Рекомендуем посетить сайт и проверить расписание вручную.'),
+                Text('А также Ваше интернет-соединение.'),
+              ],
+            )),
             actions: <Widget>[
               FlatButton(
                 child: Text('Посетить сайт'),
@@ -94,7 +108,8 @@ class ScheduleScreenPresenter{
                   view.update();
                 },
               ),
-            ],);
+            ],
+          );
         });
   }
 
@@ -106,11 +121,41 @@ class ScheduleScreenPresenter{
     }
   }
 
-  Future<List<Day>> loadSchedule() async {
-    updateWeeks();
+  loadSchedule() async {
+    loadWeeks();
+    updPerson();
+    scheduleStatus = ScheduleStatus.FirstLoad;
+    view.update();
     final userInfo = await appScopeData.userScheduleInfo();
-    final result = await parser.getWeek(userInfo: userInfo);
-    return result;
+    final result = await parser.getSchedule(userInfo: userInfo);
+    if (result != null) {
+      schedule = result;
+      scheduleStatus = ScheduleStatus.Loaded;
+      appScopeData.setSchedule(schedule);
+      view.update();
+    } else {
+      scheduleStatus = ScheduleStatus.Empty;
+      view.update();
+    }
+  }
+
+  updPerson() async {
+    final oldPersonInfo = await appScopeData.personInfo();
+    if (oldPersonInfo == null) return;
+    final newPersonInfo =
+        await Parser().getPerson(oldPersonInfo.login, oldPersonInfo.login);
+    if (newPersonInfo != null) {
+      appScopeData.setPersonInfo(newPersonInfo, auth: false);
+      final diff =
+          newPersonInfo.lastUpdate.difference(oldPersonInfo.lastUpdate).inHours;
+      if (oldPersonInfo != newPersonInfo || diff > 17) if (newPersonInfo.debt >
+          0.0) showDebtNotification(newPersonInfo.debt);
+    }
+  }
+
+  showDebtNotification(double debt) {
+    NotificationManager().sendNotification(
+        'Задолженность', 'У ваc образовалась задоженность $debt р.');
   }
 
   updateWeeks() async {
@@ -144,14 +189,6 @@ class ScheduleScreenPresenter{
         return '';
     }
   }
-
-  int getDigitFromString(String text) {
-    List<String> list = text.split('');
-    try {
-      int.parse(list[0] + list[1]);
-      return int.parse(list[0] + list[1]);
-    } catch (e) {
-      return int.parse(list[0]); //ToDo: переписать для неограниченного кол-ва чисел
-    }
-  }
 }
+
+enum ScheduleStatus { LoadFromStorage, FirstLoad, Empty, Loaded }

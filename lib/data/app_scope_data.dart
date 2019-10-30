@@ -1,13 +1,26 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:mitso/ad_manager.dart';
 import 'package:mitso/data/person_info_data.dart';
 import 'package:mitso/data/schedule_data.dart';
+import 'package:mitso/firebase_analytics_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppScopeData {
   AppScopeWidgetState state;
 
-  AppScopeData({@required this.state});
+  FirebaseAnalyticsHelper _analyticsHelper;
+
+  AdManager _adManager;
+
+  AdManager get adManager => _adManager;
+
+  FirebaseAnalyticsHelper get analyticsHelper => _analyticsHelper;
+
+  AppScopeData({@required this.state}) {
+    _analyticsHelper = FirebaseAnalyticsHelper();
+    _adManager = AdManager();
+  }
 
   Future setUserScheduleInfo(UserScheduleInfo userScheduleInfo) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -65,17 +78,15 @@ class AppScopeData {
     }
   }
 
-  Future setPersonInfo(PersonInfo personInfo, {bool auth = false}) async {
+  Future setPersonInfo(PersonInfo personInfo, {bool auth = true}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (personInfo == null)
       return prefs.remove('personInfo').then((_) {
-        if (auth)
-          state.setState(() => {});
+        state.setState(() => {});
       });
     else
       prefs.setString('personInfo', json.encode(personInfo.toMap())).then((_) {
-        if (auth)
-          state.setState(() => {});
+        if (auth) state.setState(() => {});
       });
   }
 }
@@ -100,7 +111,8 @@ class AppScopeWidget extends StatefulWidget {
 
   static AppScopeData of(BuildContext context) {
     return (context.inheritFromWidgetOfExactType(_AppScopeWidget)
-    as _AppScopeWidget).data;
+            as _AppScopeWidget)
+        .data;
   }
 
   @override

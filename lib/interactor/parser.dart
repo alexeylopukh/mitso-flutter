@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart' as material;
 import 'package:html/parser.dart';
 import 'package:html/dom.dart';
 import 'package:http/http.dart' as http;
@@ -44,15 +45,22 @@ class Parser {
     return groupList;
   }
 
-  Future<List<String>> getDateList(
-      String form, String fak, String kurs, String group) async {
-    var html = await http.get(
-        'https://mitso.by/schedule_update?type=date&kaf=$KAF&form=$form&fak='
-        '$fak&kurse=$kurs&group_class=$group');
-    var document = parse(html.body);
-    List<Element> groupElementList = document.querySelectorAll('option');
-    var groupList = _getTextListFromElementList(groupElementList);
-    return groupList;
+  Future<List<String>> getWeekList(
+      {@material.required String form,
+      @material.required String fak,
+      @material.required String kurs,
+      @material.required String group}) async {
+    try {
+      var html = await http.get(
+          'https://mitso.by/schedule_update?type=date&kaf=$KAF&form=$form&fak='
+          '$fak&kurse=$kurs&group_class=$group');
+      var document = parse(html.body);
+      List<Element> groupElementList = document.querySelectorAll('option');
+      var groupList = _getTextListFromElementList(groupElementList);
+      return groupList;
+    } catch (e) {
+      throw e;
+    }
   }
 
   List<String> _getTextListFromElementList(List<Element> elementList) {
@@ -62,7 +70,8 @@ class Parser {
     return resultList;
   }
 
-  Future<List<Day>> getWeek({UserScheduleInfo userInfo, int week = 0}) async {
+  Future<Schedule> getSchedule(
+      {UserScheduleInfo userInfo, int week = 0}) async {
     var url =
         'https://mitso.by/schedule/${userInfo.form}/${userInfo.fak}/${userInfo.kurs}/${userInfo.group}/$week';
     var html = await http.get(url);
@@ -86,20 +95,20 @@ class Parser {
               lesson: lessonEl[lesson].text,
               aud: audEl[lesson].text));
         else
-          lessons.add(Lesson(time: timeEl[lesson].text,
+          lessons.add(Lesson(
+              time: timeEl[lesson].text,
               lesson: lessonEl[lesson].text,
               aud: ''));
       }
 
       days.add(Day(dateEl[day].text, dayWeekEl[day].text, lessons));
     }
-
-    return days;
+    return days.length > 0 ? Schedule(days: days) : null;
   }
 
-  Future<PersonInfo> getAuth(String login, String password) async {
+  Future<PersonInfo> getPerson(String login, String password) async {
     var url = 'https://student.mitso.by/login_stud.php';
-    Map<String, String> body = {'login':login, 'password':password};
+    Map<String, String> body = {'login': login, 'password': password};
     try {
       var html = await http.post(url, body: body);
       var document = parse(html.body);
@@ -114,8 +123,9 @@ class Parser {
           info: info,
           balance: balance,
           debt: debt,
-          fine: fine
-      );
+          fine: fine,
+          login: login,
+          lastUpdate: DateTime.now());
     } catch (error) {
       return null;
     }
