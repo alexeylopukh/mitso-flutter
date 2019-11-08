@@ -67,8 +67,6 @@ class MyAppState extends State<MyApp> {
     Crashlytics.instance.log('Start');
     FlutterError.onError = Crashlytics.instance.recordFlutterError;
 
-    _firebaseMessaging.getToken().then((token) {
-      print('Firebase token: $token');
-    });
+    _firebaseMessaging.getToken().then((token) {});
   }
 }

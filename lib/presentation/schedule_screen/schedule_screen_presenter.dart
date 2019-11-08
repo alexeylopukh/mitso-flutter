@@ -18,6 +18,8 @@ class ScheduleScreenPresenter {
   Schedule schedule;
   ScheduleStatus scheduleStatus = ScheduleStatus.LoadFromStorage;
 
+  int currentWeek = 0;
+
   bool isAdShowed;
 
   Future<UserScheduleInfo> get userScheduleInfo async {
@@ -44,23 +46,20 @@ class ScheduleScreenPresenter {
     });
   }
 
-  onRefresh() {
-    refreshSchedule();
-  }
-
-  refreshSchedule({int week = 0}) async {
-    view.forceRefresh();
+  refreshSchedule() async {
     loadWeeks();
     updPerson();
     final userInfo = await appScopeData.userScheduleInfo();
     final newSchedule = await Parser()
-        .getSchedule(userInfo: userInfo, week: week)
+        .getSchedule(userInfo: userInfo, week: currentWeek)
         .catchError((error) => print(error));
     view.completeRefresh();
     if (newSchedule != null) {
       schedule = newSchedule;
-      if (week == 0) appScopeData.setSchedule(newSchedule);
+      if (currentWeek == 0) appScopeData.setSchedule(newSchedule);
       view.update();
+      view.pageController.animateToPage(0,
+          duration: Duration(milliseconds: 1000), curve: Curves.ease);
       goToCurrentDay();
     }
   }
@@ -138,7 +137,6 @@ class ScheduleScreenPresenter {
       scheduleStatus = ScheduleStatus.Loaded;
       appScopeData.setSchedule(schedule);
       view.update();
-      goToCurrentDay();
     } else {
       scheduleStatus = ScheduleStatus.Empty;
       view.update();

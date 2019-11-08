@@ -52,8 +52,9 @@ class WeeksWidgetState extends State<WeeksWidget> {
                 onPressed: () {
                   int week;
                   try {
-                    week = GetDigitFromString(text: presenter.weeks[week])
-                        .execute();
+                    week = GetDigitFromString(text: presenter.weeks[index])
+                            .execute() -
+                        1;
                   } catch (e) {
                     week = 0;
                   }

@@ -181,7 +181,9 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
                         .adManager
                         .showMainBanner(remoteConfig);
                     if (result != null && result.containsKey('week')) {
-                      presenter.refreshSchedule(week: result['week']);
+                      presenter.currentWeek = result['week'];
+                      forceRefresh();
+                      //presenter.refreshSchedule(week: );
                     }
                   });
                 });
@@ -284,7 +286,7 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
               padding: EdgeInsets.only(bottom: presenter.isAdShowed ? 60 : 0),
               child: SmartRefresher(
                 controller: _refreshController,
-                onRefresh: presenter.onRefresh,
+                onRefresh: presenter.refreshSchedule,
                 header: CustomHeader(
                     builder: (BuildContext context, RefreshStatus status) {
                   if (status == RefreshStatus.idle) return Container();
