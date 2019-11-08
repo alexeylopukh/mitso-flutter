@@ -3,6 +3,7 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:mitso/ad_manager.dart';
 import 'package:mitso/data/person_info_data.dart';
+import 'package:mitso/data/remote_config_data.dart';
 import 'package:mitso/data/schedule_data.dart';
 import 'package:mitso/firebase_analytics_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,7 +19,7 @@ class AppScopeData {
 
   FirebaseAnalyticsHelper get analyticsHelper => _analyticsHelper;
 
-  RemoteConfig remoteConfig;
+  RemoteConfigData _remoteConfig;
 
   AppScopeData({@required this.state}) {
     _loadRemoteConfig();
@@ -27,10 +28,13 @@ class AppScopeData {
   }
 
   _loadRemoteConfig() async {
-    remoteConfig = await RemoteConfig.instance;
-    remoteConfig.setConfigSettings(RemoteConfigSettings(debugMode: true));
-    await remoteConfig.activateFetched();
-    print(remoteConfig.getAll());
+    _remoteConfig = await RemoteConfigData.setupRemoteConfig();
+  }
+
+  Future<RemoteConfigData> get remoteConfig async {
+    if (_remoteConfig == null)
+      _remoteConfig = await RemoteConfigData.setupRemoteConfig();
+    return _remoteConfig;
   }
 
   Future setUserScheduleInfo(UserScheduleInfo userScheduleInfo) async {

@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:firebase_admob/firebase_admob.dart';
 
+import 'data/remote_config_data.dart';
+
 class AdManager {
   String _appId = 'ca-app-pub-4272857293285960~2971187629';
   String _mainBlockId = 'ca-app-pub-4272857293285960/3422613768';
@@ -24,8 +26,8 @@ class AdManager {
     );
   }
 
-  showMainBanner() {
-    if (mainBanner != null) {
+  showMainBanner(RemoteConfigData remoteConfigData) {
+    if (mainBanner != null || !remoteConfigData.showAd) {
       return;
     }
     isMainBannerShowed = true;

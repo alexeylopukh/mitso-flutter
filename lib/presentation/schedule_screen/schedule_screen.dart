@@ -35,7 +35,7 @@ const double MIN_APPBAR_HEIGHT = 0;
 class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
   ScheduleScreenPresenter presenter;
 
-  PageController _pageController;
+  PageController pageController;
 
   RefreshController _refreshController;
 
@@ -74,10 +74,10 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
       }
     });*/
 
-    _pageController = PageController(
+    pageController = PageController(
       initialPage: 0,
     );
-    _pageController.addListener(() {
+    pageController.addListener(() {
       if (height != MAX_APPBAR_HEIGHT)
         setState(() {
           height = MAX_APPBAR_HEIGHT;
@@ -123,7 +123,7 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
   void tabTapped(int index) {
     setState(() {
       selectedPage = index;
-      _pageController.animateToPage(index,
+      pageController.animateToPage(index,
           duration: Duration(milliseconds: 1000), curve: Curves.ease);
     });
   }
@@ -133,6 +133,7 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
     if (presenter == null) {
       presenter =
           ScheduleScreenPresenter(this, AppScopeWidget.of(context), Parser());
+      presenter.checkAppVersion(context);
     }
     return Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -175,10 +176,14 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
                           );
                         }))
                     .then((result) {
-                  AppScopeWidget.of(context).adManager.showMainBanner();
-                  if (result != null && result.containsKey('week')) {
-                    presenter.refreshSchedule(week: result['week']);
-                  }
+                  AppScopeWidget.of(context).remoteConfig.then((remoteConfig) {
+                    AppScopeWidget.of(context)
+                        .adManager
+                        .showMainBanner(remoteConfig);
+                    if (result != null && result.containsKey('week')) {
+                      presenter.refreshSchedule(week: result['week']);
+                    }
+                  });
                 });
               },
             ),
@@ -224,7 +229,13 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
                                       personInfo: personInfo);
                                 }))
                             .then((_) {
-                          AppScopeWidget.of(context).adManager.showMainBanner();
+                          AppScopeWidget.of(context)
+                              .remoteConfig
+                              .then((remoteConfig) {
+                            AppScopeWidget.of(context)
+                                .adManager
+                                .showMainBanner(remoteConfig);
+                          });
                         });
                       },
                     ),
@@ -248,7 +259,7 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
         return Center(child: Text('Рассписание отсуствует'));
         break;
       case ScheduleStatus.Loaded:
-        return pageView(presenter.schedule.days, _pageController);
+        return pageView(presenter.schedule.days, pageController);
         break;
       default:
         return Container();
@@ -256,11 +267,10 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
   }
 
   Widget pageView(List<Day> list, PageController pageController) {
-    return Column(
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(top: 20),
-          child: BottomNavigationBar(
+    return SafeArea(
+      child: Column(
+        children: <Widget>[
+          BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
             backgroundColor: BACK_COLOR,
             selectedItemColor: FONT_COLOR_1,
@@ -269,53 +279,53 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
             currentIndex: selectedPage,
             onTap: (index) => tabTapped(index),
           ),
-        ),
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(bottom: presenter.isAdShowed ? 60 : 0),
-            child: SmartRefresher(
-              controller: _refreshController,
-              onRefresh: presenter.onRefresh,
-              header: CustomHeader(
-                  builder: (BuildContext context, RefreshStatus status) {
-                if (status == RefreshStatus.idle) return Container();
-                return Center(
-                    child: Container(
-                        width: 20.0,
-                        height: 20.0,
-                        margin: EdgeInsets.only(bottom: 15.0),
-                        child: CircularProgressIndicator(
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(MAIN_COLOR_2),
-                            strokeWidth: 2.0)));
-              }),
-              footer: CustomFooter(
-                  loadStyle: LoadStyle.ShowWhenLoading,
-                  builder: (BuildContext context, LoadStatus mode) {
-                    if (mode == LoadStatus.idle) return Container();
-                    return Center(
-                        child: Container(
-                            margin: EdgeInsets.only(top: 20.0),
-                            width: 20.0,
-                            height: 20.0,
-                            child: CircularProgressIndicator(
-                                valueColor:
-                                    AlwaysStoppedAnimation<Color>(MAIN_COLOR_2),
-                                strokeWidth: 2.0)));
-                  }),
-              child: PageView.builder(
-                itemBuilder: (context, position) => PageItemWidget(
-                  day: list[position],
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(bottom: presenter.isAdShowed ? 60 : 0),
+              child: SmartRefresher(
+                controller: _refreshController,
+                onRefresh: presenter.onRefresh,
+                header: CustomHeader(
+                    builder: (BuildContext context, RefreshStatus status) {
+                  if (status == RefreshStatus.idle) return Container();
+                  return Center(
+                      child: Container(
+                          width: 20.0,
+                          height: 20.0,
+                          margin: EdgeInsets.only(bottom: 15.0),
+                          child: CircularProgressIndicator(
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(MAIN_COLOR_2),
+                              strokeWidth: 2.0)));
+                }),
+                footer: CustomFooter(
+                    loadStyle: LoadStyle.ShowWhenLoading,
+                    builder: (BuildContext context, LoadStatus mode) {
+                      if (mode == LoadStatus.idle) return Container();
+                      return Center(
+                          child: Container(
+                              margin: EdgeInsets.only(top: 20.0),
+                              width: 20.0,
+                              height: 20.0,
+                              child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      MAIN_COLOR_2),
+                                  strokeWidth: 2.0)));
+                    }),
+                child: PageView.builder(
+                  itemBuilder: (context, position) => PageItemWidget(
+                    day: list[position],
 //                controller: _hideButtonController,
+                  ),
+                  controller: pageController,
+                  itemCount: list.length,
+                  onPageChanged: (index) => pageChanged(index),
                 ),
-                controller: pageController,
-                itemCount: list.length,
-                onPageChanged: (index) => pageChanged(index),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

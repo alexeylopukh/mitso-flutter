@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:mitso/data/app_scope_data.dart';
 import 'package:mitso/data/notification_manager.dart';
 import 'package:mitso/data/schedule_data.dart';
+import 'package:mitso/interactor/get_digit_from_string.dart';
 import 'package:mitso/interactor/parser.dart';
 import 'package:mitso/presentation/schedule_screen/schedule_screen.dart';
+import 'package:mitso/presentation/update_message_screen/update_message_screen.dart';
+import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ScheduleScreenPresenter {
@@ -36,8 +39,9 @@ class ScheduleScreenPresenter {
       isAdShowed = isShowed;
       view.update();
     });
-
-    appScopeData.adManager.showMainBanner();
+    appScopeData.remoteConfig.then((remoteConfig) {
+      appScopeData.adManager.showMainBanner(remoteConfig);
+    });
   }
 
   onRefresh() {
@@ -57,6 +61,7 @@ class ScheduleScreenPresenter {
       schedule = newSchedule;
       if (week == 0) appScopeData.setSchedule(newSchedule);
       view.update();
+      goToCurrentDay();
     }
   }
 
@@ -133,6 +138,7 @@ class ScheduleScreenPresenter {
       scheduleStatus = ScheduleStatus.Loaded;
       appScopeData.setSchedule(schedule);
       view.update();
+      goToCurrentDay();
     } else {
       scheduleStatus = ScheduleStatus.Empty;
       view.update();
@@ -150,6 +156,26 @@ class ScheduleScreenPresenter {
           newPersonInfo.lastUpdate.difference(oldPersonInfo.lastUpdate).inHours;
       if (oldPersonInfo != newPersonInfo || diff > 17) if (newPersonInfo.debt >
           0.0) showDebtNotification(newPersonInfo.debt);
+    }
+  }
+
+  goToCurrentDay() {
+    for (int i = 0; i < schedule.days.length; i++) {
+      if (GetDigitFromString(text: schedule.days[i].data).execute() ==
+          DateTime.now().day)
+        view.pageController.animateToPage(i,
+            duration: Duration(milliseconds: 1000), curve: Curves.ease);
+    }
+  }
+
+  checkAppVersion(BuildContext context) async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    final config = await appScopeData.remoteConfig;
+    if (config.actualVersion != packageInfo.version) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => UpdateMessageScreen()),
+      );
     }
   }
 
