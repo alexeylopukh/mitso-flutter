@@ -54,6 +54,7 @@ class ScheduleScreenPresenter {
         .getSchedule(userInfo: userInfo, week: currentWeek)
         .catchError((error) => print(error));
     view.completeRefresh();
+    final isNew = schedule.toMap() != newSchedule.toMap();
     if (newSchedule != null) {
       schedule = newSchedule;
       if (currentWeek == 0) appScopeData.setSchedule(newSchedule);

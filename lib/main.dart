@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mitso/data/app_scope_data.dart';
 import 'package:mitso/data/notification_manager.dart';
 import 'package:mitso/presentation/auth_screen/auth_screen.dart';
@@ -8,7 +9,13 @@ import 'package:mitso/presentation/schedule_screen/schedule_screen.dart';
 import 'package:mitso/presentation/select_group_screen/select_group_screen.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
-void main() => runApp(MyApp());
+import 'app_theme.dart';
+
+void main() async {
+  await SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -59,6 +66,35 @@ class MyAppState extends State<MyApp> {
       title: 'МИТСО',
       routes: {'/auth': (BuildContext context) => AuthScreen()},
       home: home,
+      theme: ThemeData(
+          brightness: Brightness.light,
+          buttonColor: Color(0xff6390EE),
+          backgroundColor: Color(0xffF1F5FF),
+          accentTextTheme: TextTheme(
+              title: TextStyle(
+                  fontFamily: 'Montserrat-bold',
+                  color: Color(0xff515F79),
+                  fontSize: 16),
+              body1: TextStyle(
+                  fontFamily: 'Montserrat-Light',
+                  color: Color(0xff515F79),
+                  fontSize: 13))),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        bottomAppBarColor: Color(0xff282C3A),
+        buttonColor: Color(0xff28629C),
+        backgroundColor: Color(0xff1E212A),
+        cardColor: Color(0xff333742),
+        accentTextTheme: TextTheme(
+            title: TextStyle(
+                fontFamily: 'Montserrat-bold',
+                color: Color(0xffAEADB0),
+                fontSize: 16),
+            body1: TextStyle(
+                fontFamily: 'Montserrat-Light',
+                color: Color(0xffAEADB0),
+                fontSize: 13)),
+      ),
     );
   }
 

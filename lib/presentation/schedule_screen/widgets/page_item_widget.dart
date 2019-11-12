@@ -15,7 +15,7 @@ class PageItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(color: BACK_COLOR),
+      decoration: BoxDecoration(color: Theme.of(context).backgroundColor),
       child: Column(
         children: <Widget>[
           Expanded(
@@ -35,7 +35,7 @@ class PageItemWidget extends StatelessWidget {
                     shrinkWrap: true,
                     itemBuilder: (context, position) {
                       if (day.lessons[position].aud != null)
-                        return getCardItem(day.lessons[position]);
+                        return getCardItem(day.lessons[position], context);
                       else
                         return Container();
                     },
@@ -47,15 +47,15 @@ class PageItemWidget extends StatelessWidget {
     );
   }
 
-  Widget getCardItem(Lesson lesson) {
+  Widget getCardItem(Lesson lesson, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 4, right: 4, bottom: 3),
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        elevation: 1,
+        elevation: 1.5,
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Padding(
@@ -64,28 +64,19 @@ class PageItemWidget extends StatelessWidget {
               children: <Widget>[
                 Text(
                   lesson.time,
-                  style: TextStyle(
-                      fontFamily: 'Montserrat-bold',
-                      color: FONT_COLOR_2,
-                      fontSize: 16),
+                  style: Theme.of(context).accentTextTheme.title,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 2),
                   child: Text(lesson.lesson,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontFamily: 'Montserrat-Light',
-                          color: FONT_COLOR_2,
-                          fontSize: 13)),
+                      style: Theme.of(context).accentTextTheme.body1),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 3),
                   child: Text(
                     lesson.aud,
-                    style: TextStyle(
-                        fontFamily: 'Montserrat-Bold',
-                        color: FONT_COLOR_2,
-                        fontSize: 14),
+                    style: Theme.of(context).accentTextTheme.title,
                   ),
                 )
               ],

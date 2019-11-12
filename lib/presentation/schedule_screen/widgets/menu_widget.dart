@@ -94,121 +94,84 @@ class MenuWidgetState extends State<MenuWidget> {
   }
 
   Widget getUserInfo() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Align(
-          alignment: Alignment.center,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: Text(
-              personInfo.name,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Expanded(
-                child: Container(
-                    margin: EdgeInsets.only(right: 5),
-                    child: Padding(
-                      padding: EdgeInsets.all(5),
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      elevation: 8,
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                colors: [Color(0xff282C3A), Color(0xff1E212A)])),
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(
                       child: Text(
-                        'Баланс:\n${personInfo.balance}',
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    decoration: BoxDecoration(
-                      color: FONT_COLOR_1,
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                    )),
-              ),
-              Expanded(
-                child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 5),
-                    child: Padding(
-                      padding: EdgeInsets.all(5),
-                      child: Text(
-                        'Долг:\n${personInfo.debt}',
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    decoration: BoxDecoration(
-                      color: FONT_COLOR_1,
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                    )),
-              ),
-              Expanded(
-                child: Container(
-                    margin: EdgeInsets.only(left: 5),
-                    child: Padding(
-                      padding: EdgeInsets.all(5),
-                      child: Text(
-                        'Пеня:\n${personInfo.fine}',
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    decoration: BoxDecoration(
-                      color: FONT_COLOR_1,
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                    )),
-              )
-            ],
-          ),
-        ),
-        Align(
-          alignment: Alignment.center,
-          child:
-              Text('Баланс обновлен ${getTextFromDate(personInfo.lastUpdate)}'),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5),
-          child: Row(
-            children: <Widget>[
-              Text(
-                'Лицевой счет: ' + personInfo.login,
-                style: TextStyle(fontSize: 18),
-                textAlign: TextAlign.start,
-              ),
-              Padding(
-                  padding: const EdgeInsets.only(left: 5),
-                  child: InkWell(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(2),
-                        child: Row(
-                          children: <Widget>[
-                            Icon(
-                              Icons.content_copy,
-                              size: 15,
-                            ),
-                            Text('Копировать')
-                          ],
-                        ),
-                      ),
-                    ),
-                    onTap: () {
-                      Clipboard.setData(ClipboardData(text: personInfo.login));
-                      Toast.show('Скопировано в буфер обмена', context,
-                          duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
-                    },
+                    'MITSO',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20),
                   )),
-            ],
-          ),
+                  Image.asset(
+                    'assets/images/chip.png',
+                    height: 50,
+                    width: 50,
+                  )
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: <Widget>[
+                  Text(
+                    'Баланс\n${personInfo.balance}',
+                    style: TextStyle(fontSize: 15, color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      'Долг\n${personInfo.debt}',
+                      style: TextStyle(fontSize: 15, color: Colors.white),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Text(
+                    'Пеня\n${personInfo.fine}',
+                    style: TextStyle(fontSize: 15, color: Colors.white),
+                    textAlign: TextAlign.center,
+                  )
+                ],
+              ),
+            ),
+            Text(
+              '•••••   •••••   •••••   ${personInfo.login}',
+              style: TextStyle(fontSize: 20, color: Colors.white),
+            ),
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                  padding:
+                      EdgeInsets.only(left: 20, right: 20, bottom: 10, top: 10),
+                  child: Container(
+                      child: Text(
+                    personInfo.name,
+                    style: TextStyle(fontSize: 15, color: Colors.white),
+                  ))),
+            )
+          ],
         ),
-      ],
+      ),
     );
   }
 

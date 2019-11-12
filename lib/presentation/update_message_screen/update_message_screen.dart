@@ -58,7 +58,7 @@ class _UpdateMessageScreenState extends State<UpdateMessageScreen> {
   @override
   void dispose() {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: BACK_COLOR,
+        statusBarColor: Theme.of(context).backgroundColor,
         statusBarIconBrightness: Brightness.dark,
         systemNavigationBarColor: Colors.white,
         systemNavigationBarIconBrightness: Brightness.dark));

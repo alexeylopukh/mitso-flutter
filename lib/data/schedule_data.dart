@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'dart:convert';
 
 const _NO_LESSON_TEXT = 'Нет занятий';
 
@@ -17,6 +16,18 @@ class Schedule {
   Map<String, dynamic> toMap() => {
         "days": List<dynamic>.from(days.map((x) => x.toMap())),
       };
+
+  bool isNewSchedule(Schedule newSchedule) {
+    if (days.length == newSchedule.days.length) {
+      for (int i = 0; i < days.length; i++) {
+        if (days[i].data == newSchedule.days[i].data &&
+            days[i].lessons.length == newSchedule.days[i].lessons.length) {
+          
+        }
+        else return false;
+      }
+    } else return false;
+  }
 }
 
 class Day {
@@ -100,20 +111,6 @@ class UserScheduleInfo {
     @required this.kurs,
     @required this.group,
   });
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is UserScheduleInfo &&
-          runtimeType == other.runtimeType &&
-          form == other.form &&
-          fak == other.fak &&
-          kurs == other.kurs &&
-          group == other.group);
-
-  @override
-  int get hashCode =>
-      form.hashCode ^ fak.hashCode ^ kurs.hashCode ^ group.hashCode;
 
   @override
   String toString() {

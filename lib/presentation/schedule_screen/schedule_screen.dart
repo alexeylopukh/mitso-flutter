@@ -51,11 +51,6 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: BACK_COLOR,
-        statusBarIconBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark));
     /*
     _hideButtonController = new ScrollController();
     _hideButtonController.addListener(() {
@@ -130,6 +125,16 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: Theme.of(context).backgroundColor,
+        statusBarIconBrightness: Theme.of(context).brightness == Brightness.dark
+            ? Brightness.light
+            : Brightness.dark,
+        systemNavigationBarColor: Theme.of(context).bottomAppBarColor,
+        systemNavigationBarIconBrightness:
+            Theme.of(context).brightness == Brightness.dark
+                ? Brightness.light
+                : Brightness.dark));
     if (presenter == null) {
       presenter =
           ScheduleScreenPresenter(this, AppScopeWidget.of(context), Parser());
@@ -144,9 +149,13 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
             padding: const EdgeInsets.only(top: 30),
             child: FloatingActionButton.extended(
               elevation: 4.0,
-              backgroundColor: MAIN_COLOR_2,
-              icon: const Icon(Icons.history),
-              label: const Text('Сменить неделю'),
+              backgroundColor: Theme.of(context).buttonColor,
+              icon: const Icon(
+                Icons.history,
+                color: Colors.white,
+              ),
+              label: const Text('Сменить неделю',
+                  style: TextStyle(color: Colors.white)),
               onPressed: () async {
                 AppScopeWidget.of(context).adManager.hideMainBanner();
                 showModalBottomSheet(
@@ -202,7 +211,7 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
             height: height,
             child: BottomAppBar(
                 elevation: 2,
-                color: MAIN_COLOR_1,
+                color: Theme.of(context).bottomAppBarColor,
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
@@ -245,7 +254,8 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
                 )),
           ),
         ),
-        body: Container(color: BACK_COLOR, child: body()));
+        body:
+            Container(color: Theme.of(context).backgroundColor, child: body()));
   }
 
   Widget body() {
@@ -274,7 +284,7 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
         children: <Widget>[
           BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
-            backgroundColor: BACK_COLOR,
+            backgroundColor: Theme.of(context).backgroundColor,
             selectedItemColor: FONT_COLOR_1,
             elevation: 2,
             items: buildBottomNavBarItems(list),

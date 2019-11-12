@@ -65,8 +65,8 @@ class SelectGroupScreen extends StatelessWidget {
                     _controller = _key.currentState.showBottomSheet(
                         (_) => SizedBox(
                               child: Container(
-                                  decoration:
-                                      BoxDecoration(color: MAIN_COLOR_1),
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).backgroundColor),
                                   child: Center(
                                       child: Text('Заполните все данные',
                                           style: TextStyle(
