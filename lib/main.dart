@@ -68,7 +68,7 @@ class MyAppState extends State<MyApp> {
       home: home,
       theme: ThemeData(
           brightness: Brightness.light,
-          buttonColor: Color(0xff6390EE),
+          buttonColor: Color(0xff4373F3),
           backgroundColor: Color(0xffF1F5FF),
           accentTextTheme: TextTheme(
               title: TextStyle(

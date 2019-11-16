@@ -44,6 +44,8 @@ class ScheduleScreenPresenter {
     appScopeData.remoteConfig.then((remoteConfig) {
       appScopeData.adManager.showMainBanner(remoteConfig);
     });
+
+    parser.getPhysicalEducationSchedule();
   }
 
   refreshSchedule() async {

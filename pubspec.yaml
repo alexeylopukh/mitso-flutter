@@ -14,17 +14,20 @@ dependencies:
   firebase_messaging: ^5.1.8
   firebase_analytics: ^5.0.6
   firebase_crashlytics: ^0.1.1+2
-  firebase_remote_config: ^0.2.0+9
+  firebase_remote_config: ^0.2.1
   firebase_admob: ^0.9.0+9
   http: ^0.12.0+2
   html: ^0.14.0+3
-  shared_preferences: ^0.5.4+3
+  shared_preferences: ^0.5.4+5
   pull_to_refresh: ^1.5.7
   url_launcher: ^5.2.5
   toast: ^0.1.5
   flutter_local_notifications: ^0.8.4
   rxdart: ^0.22.6
   package_info: ^0.4.0+10
+  pdftron_flutter:
+    git:
+      url: git://github.com/PDFTron/pdftron-flutter.git
 dev_dependencies:
   flutter_test:
     sdk: flutter

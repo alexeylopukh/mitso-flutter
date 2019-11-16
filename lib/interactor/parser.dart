@@ -6,10 +6,11 @@ import 'package:mitso/data/person_info_data.dart';
 import 'package:mitso/data/schedule_data.dart';
 
 const KAF = 'Glavnaya+kafedra';
+const BASE_URL = 'https://mitso.by';
 
 class Parser {
   Future<List<String>> getFakList() async {
-    var html = await http.get('https://mitso.by/schedule/search');
+    var html = await http.get(BASE_URL + '/schedule/search');
     var document = parse(html.body);
     List<Element> fakElementList = document.querySelectorAll('option');
     var fakList = _getTextListFromElementList(fakElementList);
@@ -18,7 +19,7 @@ class Parser {
 
   Future<List<String>> getFormList(String fak) async {
     var html = await http
-        .get('https://mitso.by/schedule_update?type=form&kaf=$KAF&fak=$fak');
+        .get(BASE_URL + '/schedule_update?type=form&kaf=$KAF&fak=$fak');
     var document = parse(html.body);
     List<Element> formElementList = document.querySelectorAll('option');
     var formList = _getTextListFromElementList(formElementList);
@@ -27,7 +28,7 @@ class Parser {
 
   Future<List<String>> getKursList(String form, String fak) async {
     var html = await http.get(
-        'https://mitso.by/schedule_update?type=kurse&kaf=$KAF&form=$form&fak=$fak');
+        BASE_URL + '/schedule_update?type=kurse&kaf=$KAF&form=$form&fak=$fak');
     var document = parse(html.body);
     List<Element> kursElementList = document.querySelectorAll('option');
     var kursList = _getTextListFromElementList(kursElementList);
@@ -36,9 +37,9 @@ class Parser {
 
   Future<List<String>> getGroupList(
       String form, String fak, String kurs) async {
-    var html = await http.get(
-        'https://mitso.by/schedule_update?type=group_class&kaf=$KAF&form=$form'
-        '&fak=$fak&kurse=$kurs');
+    var html = await http.get(BASE_URL +
+        '/schedule_update?type=group_class&kaf=$KAF&form=$form'
+            '&fak=$fak&kurse=$kurs');
     var document = parse(html.body);
     List<Element> groupElementList = document.querySelectorAll('option');
     var groupList = _getTextListFromElementList(groupElementList);
@@ -51,9 +52,9 @@ class Parser {
       @material.required String kurs,
       @material.required String group}) async {
     try {
-      var html = await http.get(
-          'https://mitso.by/schedule_update?type=date&kaf=$KAF&form=$form&fak='
-          '$fak&kurse=$kurs&group_class=$group');
+      var html = await http.get(BASE_URL +
+          'schedule_update?type=date&kaf=$KAF&form=$form&fak='
+              '$fak&kurse=$kurs&group_class=$group');
       var document = parse(html.body);
       List<Element> groupElementList = document.querySelectorAll('option');
       var groupList = _getTextListFromElementList(groupElementList);
@@ -72,8 +73,9 @@ class Parser {
 
   Future<Schedule> getSchedule(
       {UserScheduleInfo userInfo, int week = 0}) async {
-    var url =
-        'https://mitso.by/schedule/${userInfo.form}/${userInfo.fak}/${userInfo.kurs}/${userInfo.group}/$week';
+    var url = BASE_URL +
+        '/schedule/${userInfo.form}/${userInfo.fak}/${userInfo.kurs}/'
+            '${userInfo.group}/$week';
     var html = await http.get(url);
     var document = parse(html.body);
     List<Element> dateEl = document.querySelectorAll('div.rp-ras-data');
@@ -107,7 +109,7 @@ class Parser {
   }
 
   Future<PersonInfo> getPerson(String login, String password) async {
-    var url = 'https://student.mitso.by/login_stud.php';
+    final url = 'https://student.mitso.by/login_stud.php';
     Map<String, String> body = {'login': login, 'password': password};
     try {
       var html = await http.post(url, body: body);
@@ -128,6 +130,18 @@ class Parser {
           lastUpdate: DateTime.now());
     } catch (error) {
       return null;
+    }
+  }
+
+  getPhysicalEducationSchedule() async {
+    final url = BASE_URL + '/raspisanie-zanyatiy-po-fizkulture';
+    var html = await http.get(url);
+    var document = parse(html.body);
+    List<Element> urlDivEl = document.querySelectorAll('div.rp-pol-news');
+    for (Element el in urlDivEl) {
+      final href = el.querySelector('a[href]');
+      print(href.text);
+      print(href.attributes['href'].toString());
     }
   }
 }

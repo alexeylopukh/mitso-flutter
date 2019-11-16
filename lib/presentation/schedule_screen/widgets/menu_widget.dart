@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:mitso/data/person_info_data.dart';
 import 'package:mitso/data/schedule_data.dart';
 import 'package:mitso/presentation/schedule_screen/schedule_screen_presenter.dart';
+import 'package:mitso/presentation/schedule_screen/widgets/theme_picker_widget.dart';
 import 'package:toast/toast.dart';
 
 import '../../../app_theme.dart';
@@ -31,7 +32,7 @@ class MenuWidgetState extends State<MenuWidget> {
   @override
   Widget build(BuildContext baseContext) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.only(left: 20, right: 20, bottom: 5),
       child: Column(
         children: <Widget>[
           Padding(
@@ -45,46 +46,98 @@ class MenuWidgetState extends State<MenuWidget> {
           ),
           personInfo == null
               ? FlatButton(
-                  color: FONT_COLOR_1,
+                  color: Theme.of(context).buttonColor,
                   child: Text('Авторизоваться',
                       style: TextStyle(color: Colors.white, fontSize: 18)),
                   onPressed: () => Navigator.pushNamed(context, '/auth'),
                   shape: StadiumBorder(),
                 )
               : getUserInfo(),
-          Align(
-            alignment: Alignment.topLeft,
-            child: Text('Выбрана группа: ${userScheduleInfo.group}',
-                style: TextStyle(fontSize: 18)),
+          FlatButton(
+            child: Text('theme'),
+            onPressed: () async {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      content:
+                          Container(height: 200, child: ThemePickerWidget()),
+                    );
+                  });
+            },
           ),
           Spacer(),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               personInfo != null
-                  ? FlatButton(
-                      color: FONT_COLOR_1,
-                      child: Text('Выйти из ЛК',
-                          style: TextStyle(color: Colors.white, fontSize: 18)),
-                      onPressed: () => presenter.appScopeData
-                          .setPersonInfo(null, auth: true),
-                      shape: StadiumBorder(),
+                  ? GestureDetector(
+                      onTap: () {
+                        presenter.appScopeData.setPersonInfo(null, auth: true);
+                      },
+                      child: Container(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: <Widget>[
+                                Text('Выйти из ',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold)),
+                                Icon(
+                                  Icons.person,
+                                  color: Colors.white,
+                                ),
+                              ],
+                            ),
+                          ),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              gradient: LinearGradient(
+                                  begin: Alignment.topRight,
+                                  end: Alignment.bottomLeft,
+                                  colors: Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? [Color(0xff1E212A), Color(0xff1E212A)]
+                                      : [
+                                          Color(0xff4373F3),
+                                          Color(0xff3E6AE3)
+                                        ]))),
                     )
                   : Container(),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: FlatButton(
-                    color: FONT_COLOR_1,
-                    child: Text('Сменить группу',
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
-                    onPressed: () {
-                      presenter.appScopeData.setSchedule(null);
-                      presenter.appScopeData.setUserScheduleInfo(null);
-                    },
-                    shape: StadiumBorder(),
-                  ),
-                ),
+              GestureDetector(
+                onTap: () {
+                  presenter.appScopeData.setSchedule(null);
+                  presenter.appScopeData.setUserScheduleInfo(null);
+                },
+                child: Container(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: <Widget>[
+                          Text(userScheduleInfo.group + ' ',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold)),
+                          Icon(
+                            Icons.exit_to_app,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        gradient: LinearGradient(
+                            begin: Alignment.topRight,
+                            end: Alignment.bottomLeft,
+                            colors:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? [Color(0xff1E212A), Color(0xff1E212A)]
+                                    : [Color(0xff4373F3), Color(0xff3E6AE3)]))),
               )
             ],
           )
@@ -94,84 +147,107 @@ class MenuWidgetState extends State<MenuWidget> {
   }
 
   Widget getUserInfo() {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      elevation: 8,
-      child: Container(
-        decoration: BoxDecoration(
+    return Column(
+      children: <Widget>[
+        Card(
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
-            gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [Color(0xff282C3A), Color(0xff1E212A)])),
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(
-                      child: Text(
-                    'MITSO',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20),
-                  )),
-                  Image.asset(
-                    'assets/images/chip.png',
-                    height: 50,
-                    width: 50,
-                  )
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                children: <Widget>[
-                  Text(
-                    'Баланс\n${personInfo.balance}',
-                    style: TextStyle(fontSize: 15, color: Colors.white),
-                    textAlign: TextAlign.center,
+          ),
+          elevation: 8,
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: Theme.of(context).brightness == Brightness.dark
+                        ? [Color(0xff282C3A), Color(0xff1E212A)]
+                        : [Color(0xff4373F3), Color(0xff3E6AE3)])),
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Expanded(
+                          child: Text(
+                        'MITSO',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
+                      )),
+                      Image.asset(
+                        'assets/images/chip.png',
+                        height: 50,
+                        width: 50,
+                      )
+                    ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Text(
-                      'Долг\n${personInfo.debt}',
-                      style: TextStyle(fontSize: 15, color: Colors.white),
-                      textAlign: TextAlign.center,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        'Баланс\n${personInfo.balance}',
+                        style: TextStyle(fontSize: 15, color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Text(
+                          'Долг\n${personInfo.debt}',
+                          style: TextStyle(fontSize: 15, color: Colors.white),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Text(
+                        'Пеня\n${personInfo.fine}',
+                        style: TextStyle(fontSize: 15, color: Colors.white),
+                        textAlign: TextAlign.center,
+                      )
+                    ],
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      '••••• ',
+                      style: TextStyle(fontSize: 30, color: Colors.white),
                     ),
-                  ),
-                  Text(
-                    'Пеня\n${personInfo.fine}',
-                    style: TextStyle(fontSize: 15, color: Colors.white),
-                    textAlign: TextAlign.center,
-                  )
-                ],
-              ),
+                    Text(
+                      '••••• ',
+                      style: TextStyle(fontSize: 30, color: Colors.white),
+                    ),
+                    Text(
+                      '••••• ',
+                      style: TextStyle(fontSize: 30, color: Colors.white),
+                    ),
+                    Text(
+                      personInfo.login,
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    ),
+                  ],
+                ),
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Padding(
+                      padding: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                      child: Container(
+                          child: Text(
+                        personInfo.name,
+                        style: TextStyle(fontSize: 15, color: Colors.white),
+                      ))),
+                ),
+              ],
             ),
-            Text(
-              '•••••   •••••   •••••   ${personInfo.login}',
-              style: TextStyle(fontSize: 20, color: Colors.white),
-            ),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: Padding(
-                  padding:
-                      EdgeInsets.only(left: 20, right: 20, bottom: 10, top: 10),
-                  child: Container(
-                      child: Text(
-                    personInfo.name,
-                    style: TextStyle(fontSize: 15, color: Colors.white),
-                  ))),
-            )
-          ],
+          ),
         ),
-      ),
+        Text('Обновлено ' + getTextFromDate(personInfo.lastUpdate))
+      ],
     );
   }
 
