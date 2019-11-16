@@ -3,6 +3,7 @@ import 'package:html/parser.dart';
 import 'package:html/dom.dart';
 import 'package:http/http.dart' as http;
 import 'package:mitso/data/person_info_data.dart';
+import 'package:mitso/data/physical_schedule_data.dart';
 import 'package:mitso/data/schedule_data.dart';
 
 const KAF = 'Glavnaya+kafedra';
@@ -53,7 +54,7 @@ class Parser {
       @material.required String group}) async {
     try {
       var html = await http.get(BASE_URL +
-          'schedule_update?type=date&kaf=$KAF&form=$form&fak='
+          '/schedule_update?type=date&kaf=$KAF&form=$form&fak='
               '$fak&kurse=$kurs&group_class=$group');
       var document = parse(html.body);
       List<Element> groupElementList = document.querySelectorAll('option');
@@ -133,15 +134,17 @@ class Parser {
     }
   }
 
-  getPhysicalEducationSchedule() async {
+  Future<List<PhysicalScheduleData>> getPhysicalEducationSchedule() async {
     final url = BASE_URL + '/raspisanie-zanyatiy-po-fizkulture';
     var html = await http.get(url);
     var document = parse(html.body);
-    List<Element> urlDivEl = document.querySelectorAll('div.rp-pol-news');
+    List<Element> urlDivEl =
+        document.querySelector('div.rp-pol-news').querySelectorAll('a[href]');
+    final result = List<PhysicalScheduleData>();
     for (Element el in urlDivEl) {
-      final href = el.querySelector('a[href]');
-      print(href.text);
-      print(href.attributes['href'].toString());
+      result.add(PhysicalScheduleData(
+          text: el.text, url: el.attributes['href'].toString()));
     }
+    return result;
   }
 }

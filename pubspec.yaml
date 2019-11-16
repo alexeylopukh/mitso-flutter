@@ -25,9 +25,6 @@ dependencies:
   flutter_local_notifications: ^0.8.4
   rxdart: ^0.22.6
   package_info: ^0.4.0+10
-  pdftron_flutter:
-    git:
-      url: git://github.com/PDFTron/pdftron-flutter.git
 dev_dependencies:
   flutter_test:
     sdk: flutter

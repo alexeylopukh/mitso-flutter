@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mitso/data/person_info_data.dart';
 import 'package:mitso/data/schedule_data.dart';
+import 'package:mitso/presentation/physical_schedule_screen/physical_schedule_screen.dart';
 import 'package:mitso/presentation/schedule_screen/schedule_screen_presenter.dart';
 import 'package:mitso/presentation/schedule_screen/widgets/theme_picker_widget.dart';
 import 'package:toast/toast.dart';
@@ -54,16 +55,13 @@ class MenuWidgetState extends State<MenuWidget> {
                 )
               : getUserInfo(),
           FlatButton(
-            child: Text('theme'),
+            child: Text('Физра!!!'),
             onPressed: () async {
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      content:
-                          Container(height: 200, child: ThemePickerWidget()),
-                    );
-                  });
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PhysicalScheduleScreen()),
+              );
             },
           ),
           Spacer(),

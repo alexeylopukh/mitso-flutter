@@ -144,15 +144,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.6.4"
-  pdftron_flutter:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: e7114e2cb04990e95ce28dbf017188aeb638e867
-      url: "git://github.com/PDFTron/pdftron-flutter.git"
-    source: git
-    version: "0.0.1"
   pedantic:
     dependency: transitive
     description:
