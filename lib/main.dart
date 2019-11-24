@@ -69,7 +69,7 @@ class MyAppState extends State<MyApp> {
       theme: ThemeData(
           brightness: Brightness.light,
           buttonColor: Color(0xff4373F3),
-          backgroundColor: Color(0xffF1F5FF),
+          backgroundColor: Color(0xff6390EE),
           accentTextTheme: TextTheme(
               title: TextStyle(
                   fontFamily: 'Montserrat-bold',

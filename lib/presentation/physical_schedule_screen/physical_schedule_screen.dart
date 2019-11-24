@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mitso/data/app_scope_data.dart';
+import 'package:mitso/data/physical_schedule_data.dart';
 import 'package:mitso/presentation/physical_schedule_screen/physical_schedule_presenter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -38,16 +39,21 @@ class PhysicalScheduleScreenState extends State<PhysicalScheduleScreen> {
         return CircularProgressIndicator();
         break;
       case PhysicalScheduleStatus.Loaded:
-        return ListView.builder(
-          padding: EdgeInsets.zero,
-          shrinkWrap: true,
-          itemBuilder: (context, position) {
-            return GestureDetector(
-              onTap: () => _launchURL(presenter.scheduleList[position].url),
-              child: Text(presenter.scheduleList[position].text),
-            );
-          },
-          itemCount: presenter.scheduleList.length,
+        final childrens = List<Widget>();
+        childrens.add(Text(
+          'РАСПИСАНИЕ ЗАНЯТИЙ ПО ФИЗКУЛЬТУРЕ',
+          style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+        ));
+        for (var fsi in presenter.scheduleList) {
+          childrens.add(generatePhysicalScheduleItem(fsi));
+        }
+        return SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: childrens,
+            ),
+          ),
         );
         break;
       case PhysicalScheduleStatus.Error:
@@ -64,5 +70,31 @@ class PhysicalScheduleScreenState extends State<PhysicalScheduleScreen> {
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  generatePhysicalScheduleItem(PhysicalScheduleData item) {
+    return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 1),
+        child: GestureDetector(
+          onTap: () => _launchURL(item.url),
+          child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              elevation: 2,
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                      child: Padding(
+                    padding: const EdgeInsets.only(left: 5, top: 5, bottom: 5),
+                    child: Text(
+                      item.text,
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  )),
+                  Icon(Icons.arrow_forward_ios)
+                ],
+              )),
+        ));
   }
 }
