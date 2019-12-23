@@ -44,7 +44,6 @@ class AdManager {
                 isMainBannerShowedStream.add(true);
               break;
             case MobileAdEvent.failedToLoad:
-              // TODO: Handle this case.
               break;
             case MobileAdEvent.clicked:
               hideMainBanner();
@@ -55,7 +54,6 @@ class AdManager {
               hideMainBanner();
               break;
             case MobileAdEvent.leftApplication:
-              // TODO: Handle this case.
               break;
             case MobileAdEvent.closed:
               hideMainBanner();
@@ -71,11 +69,9 @@ class AdManager {
   }
 
   hideMainBanner() {
-    Future.delayed(const Duration(milliseconds: 500), () {
-      isMainBannerShowed = false;
-      isMainBannerShowedStream.add(false);
-      mainBanner?.dispose();
-      mainBanner = null;
-    });
+    isMainBannerShowed = false;
+    isMainBannerShowedStream.add(false);
+    mainBanner?.dispose();
+    mainBanner = null;
   }
 }

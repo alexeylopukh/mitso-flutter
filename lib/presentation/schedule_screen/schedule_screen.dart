@@ -41,7 +41,7 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
 
   GlobalKey<ScaffoldState> _key = GlobalKey();
 
-//  ScrollController _hideButtonController;
+  ScrollController scrollController;
 
   double height = MAX_APPBAR_HEIGHT;
   double width = double.infinity;
@@ -51,8 +51,9 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
   @override
   void initState() {
     super.initState();
+
+    scrollController = new ScrollController();
     /*
-    _hideButtonController = new ScrollController();
     _hideButtonController.addListener(() {
       if (_hideButtonController.position.userScrollDirection ==
           ScrollDirection.reverse) {
@@ -159,32 +160,30 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
               onPressed: () async {
                 AppScopeWidget.of(context).adManager.hideMainBanner();
                 showModalBottomSheet(
-                        context: context,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
+                    context: context,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                    ),
+                    builder: ((_) {
+                      return Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5, bottom: 5),
+                            child: Container(
+                              height: 4,
+                              width: 60,
+                              decoration: BoxDecoration(
+                                  color: Colors.grey,
+                                  borderRadius: BorderRadius.circular(20)),
+                            ),
                           ),
-                        ),
-                        builder: ((_) {
-                          return Column(
-                            children: <Widget>[
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(top: 5, bottom: 5),
-                                child: Container(
-                                  height: 4,
-                                  width: 60,
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey,
-                                      borderRadius: BorderRadius.circular(20)),
-                                ),
-                              ),
-                              WeeksWidget(weeks: presenter.weekList)
-                            ],
-                          );
-                        }))
-                    .then((result) {
+                          WeeksWidget(weeks: presenter.weekList)
+                        ],
+                      );
+                    })).then((result) {
                   AppScopeWidget.of(context).remoteConfig.then((remoteConfig) {
                     AppScopeWidget.of(context)
                         .adManager
@@ -227,19 +226,18 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
                         final personInfo =
                             await presenter.appScopeData.personInfo();
                         showModalBottomSheet(
-                                context: context,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(20),
-                                      topRight: Radius.circular(20)),
-                                ),
-                                builder: ((_) {
-                                  return MenuWidget(
-                                      presenter: this.presenter,
-                                      userScheduleInfo: userScheduleInfo,
-                                      personInfo: personInfo);
-                                }))
-                            .then((_) {
+                            context: context,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20)),
+                            ),
+                            builder: ((_) {
+                              return MenuWidget(
+                                  presenter: this.presenter,
+                                  userScheduleInfo: userScheduleInfo,
+                                  personInfo: personInfo);
+                            })).then((_) {
                           AppScopeWidget.of(context)
                               .remoteConfig
                               .then((remoteConfig) {
@@ -296,6 +294,7 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
               padding: EdgeInsets.only(bottom: presenter.isAdShowed ? 60 : 0),
               child: SmartRefresher(
                 controller: _refreshController,
+                scrollController: scrollController,
                 onRefresh: presenter.refreshSchedule,
                 header: CustomHeader(
                     builder: (BuildContext context, RefreshStatus status) {
@@ -327,7 +326,7 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
                 child: PageView.builder(
                   itemBuilder: (context, position) => PageItemWidget(
                     day: list[position],
-//                controller: _hideButtonController,
+                    controller: scrollController,
                   ),
                   controller: pageController,
                   itemCount: list.length,

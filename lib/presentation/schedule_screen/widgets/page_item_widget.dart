@@ -5,12 +5,9 @@ import 'package:mitso/data/schedule_data.dart';
 
 class PageItemWidget extends StatelessWidget {
   final Day day;
-//  final ScrollController controller;
+  final ScrollController controller;
 
-  PageItemWidget({
-    @required this.day,
-//    @required this.controller
-  });
+  PageItemWidget({@required this.day, @required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +27,7 @@ class PageItemWidget extends StatelessWidget {
                         color: FONT_COLOR_2),
                   )))
                 : ListView.builder(
-//                    controller: controller,
+                    controller: controller,
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     itemBuilder: (context, position) {

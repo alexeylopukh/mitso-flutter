@@ -11,9 +11,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import 'app_theme.dart';
 
-void main() async {
-  await SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+void main() {
   runApp(MyApp());
 }
 
