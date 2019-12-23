@@ -42,8 +42,10 @@ class WeeksWidgetPresenter {
       if (status != WeeksStatus.Error) {
         if (weeks == null || weeks.length == 0)
           status = WeeksStatus.Empty;
-        else
+        else {
+          this.weeks = weeks;
           status = WeeksStatus.Loaded;
+        }
       }
       view.update();
     });

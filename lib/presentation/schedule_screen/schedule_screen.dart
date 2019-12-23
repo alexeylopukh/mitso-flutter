@@ -47,12 +47,13 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
   double width = double.infinity;
 
   int selectedPage = 0;
+  bool isFirstView = true;
 
   @override
   void initState() {
     super.initState();
 
-    scrollController = new ScrollController();
+    scrollController = ScrollController();
     /*
     _hideButtonController.addListener(() {
       if (_hideButtonController.position.userScrollDirection ==
@@ -277,6 +278,12 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
   }
 
   Widget pageView(List<Day> list, PageController pageController) {
+    Future.delayed(Duration(milliseconds: 100), () {
+      if (isFirstView) {
+        final route = presenter.goToCurrentDay();
+        if (route) isFirstView = false;
+      }
+    });
     return SafeArea(
       child: Column(
         children: <Widget>[

@@ -62,26 +62,6 @@ class WeeksWidgetState extends State<WeeksWidget> {
                 },
               ),
             ));
-    /*
-    for (int i = 0; i < presenter.weekList.length; i++) {
-      //ToDo: Rewrite
-      childrens.add(OutlineButton(
-          borderSide: BorderSide(color: FONT_COLOR_2, width: 2),
-          shape: StadiumBorder(),
-          child: Text(presenter.weekList[i],
-              style: TextStyle(color: FONT_COLOR_2, fontSize: 18)),
-          onPressed: () {
-            int week;
-            try {
-              week = presenter.getDigitFromString(presenter.weekList[i]);
-            } catch (e) {
-              week = 0;
-            }
-            Navigator.pop(context);
-            presenter.refreshSchedule(week: week);
-          }));
-    }
-    return Column(children: childrens);*/
   }
 
   Widget loadingWidget() {

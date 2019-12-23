@@ -54,7 +54,7 @@ class ScheduleScreenPresenter {
     final userInfo = await appScopeData.userScheduleInfo();
     final newSchedule = await Parser()
         .getSchedule(userInfo: userInfo, week: currentWeek)
-        .catchError((error) => print(error));
+        .catchError((error) => goToCurrentDay());
     view.completeRefresh();
     final isNew = schedule.toMap() != newSchedule.toMap();
     if (newSchedule != null) {
@@ -160,13 +160,20 @@ class ScheduleScreenPresenter {
     }
   }
 
-  goToCurrentDay() {
-    for (int i = 0; i < schedule.days.length; i++) {
-      if (GetDigitFromString(text: schedule.days[i].data).execute() ==
-          DateTime.now().day)
-        view.pageController.animateToPage(i,
-            duration: Duration(milliseconds: 1000), curve: Curves.ease);
-    }
+  bool goToCurrentDay() {
+    if (view.pageController.hasClients &&
+        schedule != null &&
+        schedule.days != null &&
+        schedule.days.length != 0) {
+      for (int i = 0; i < schedule.days.length; i++) {
+        if (GetDigitFromString(text: schedule.days[i].data).execute() ==
+            DateTime.now().day)
+          view.pageController.animateToPage(i,
+              duration: Duration(milliseconds: 1000), curve: Curves.ease);
+      }
+    } else
+      return false;
+    return true;
   }
 
   checkAppVersion(BuildContext context) async {
