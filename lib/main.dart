@@ -8,6 +8,7 @@ import 'package:mitso/presentation/auth_screen/auth_screen.dart';
 import 'package:mitso/presentation/schedule_screen/schedule_screen.dart';
 import 'package:mitso/presentation/select_group_screen/select_group_screen.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:mitso/thems.dart';
 
 import 'app_theme.dart';
 
@@ -33,6 +34,10 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     runZoned<Future<void>>(() async {},
         onError: Crashlytics.instance.recordError);
 
@@ -61,39 +66,11 @@ class MyAppState extends State<MyApp> {
 
   static Widget createMaterialApp(Widget home) {
     return MaterialApp(
-      title: 'МИТСО',
-      routes: {'/auth': (BuildContext context) => AuthScreen()},
-      home: home,
-      theme: ThemeData(
-          brightness: Brightness.light,
-          buttonColor: Color(0xff4373F3),
-          backgroundColor: Color(0xff6390EE),
-          accentTextTheme: TextTheme(
-              title: TextStyle(
-                  fontFamily: 'Montserrat-bold',
-                  color: Color(0xff515F79),
-                  fontSize: 16),
-              body1: TextStyle(
-                  fontFamily: 'Montserrat-Light',
-                  color: Color(0xff515F79),
-                  fontSize: 13))),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        bottomAppBarColor: Color(0xff282C3A),
-        buttonColor: Color(0xff28629C),
-        backgroundColor: Color(0xff1E212A),
-        cardColor: Color(0xff333742),
-        accentTextTheme: TextTheme(
-            title: TextStyle(
-                fontFamily: 'Montserrat-bold',
-                color: Color(0xffAEADB0),
-                fontSize: 16),
-            body1: TextStyle(
-                fontFamily: 'Montserrat-Light',
-                color: Color(0xffAEADB0),
-                fontSize: 13)),
-      ),
-    );
+        title: 'МИТСО',
+        routes: {'/auth': (BuildContext context) => AuthScreen()},
+        home: home,
+        theme: Themes.light,
+        darkTheme: Themes.dark);
   }
 
   initFirebase() {

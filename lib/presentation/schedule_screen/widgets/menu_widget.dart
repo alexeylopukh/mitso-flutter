@@ -8,6 +8,7 @@ import 'package:mitso/presentation/physical_schedule_screen/physical_schedule_sc
 import 'package:mitso/presentation/schedule_screen/schedule_screen_presenter.dart';
 import 'package:mitso/presentation/schedule_screen/widgets/theme_picker_widget.dart';
 import 'package:toast/toast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../app_theme.dart';
 
@@ -54,15 +55,47 @@ class MenuWidgetState extends State<MenuWidget> {
                   shape: StadiumBorder(),
                 )
               : getUserInfo(),
-          FlatButton(
-            child: Text('Физра!!!'),
-            onPressed: () async {
+          Spacer(),
+          GestureDetector(
+            onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => PhysicalScheduleScreen()),
               );
             },
+            child: Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('Расписание занятий по физкультуре',
+                      style: TextStyle(color: Colors.white, fontSize: 16)),
+                ),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    gradient: LinearGradient(
+                        begin: Alignment.topRight,
+                        end: Alignment.bottomLeft,
+                        colors: Theme.of(context).brightness == Brightness.dark
+                            ? [Color(0xff1E212A), Color(0xff1E212A)]
+                            : [Color(0xff4373F3), Color(0xff3E6AE3)]))),
+          ),
+          Spacer(),
+          GestureDetector(
+            onTap: () => _launchURL('https://t.me/DirtyAlex'),
+            child: Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('Связаться с разработчиком',
+                      style: TextStyle(color: Colors.white, fontSize: 16)),
+                ),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    gradient: LinearGradient(
+                        begin: Alignment.topRight,
+                        end: Alignment.bottomLeft,
+                        colors: Theme.of(context).brightness == Brightness.dark
+                            ? [Color(0xff1E212A), Color(0xff1E212A)]
+                            : [Color(0xff4373F3), Color(0xff3E6AE3)]))),
           ),
           Spacer(),
           Row(
@@ -257,5 +290,13 @@ class MenuWidgetState extends State<MenuWidget> {
       return 'вчера в ${DateFormat('HH:mm').format(dateTime)}';
     else
       return DateFormat('dd.MM HH:mm').format(dateTime);
+  }
+
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

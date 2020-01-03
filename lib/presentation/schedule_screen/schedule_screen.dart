@@ -118,11 +118,11 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
   }
 
   void tabTapped(int index) {
-    setState(() {
+    try {
       selectedPage = index;
       pageController.animateToPage(index,
           duration: Duration(milliseconds: 1000), curve: Curves.ease);
-    });
+    } catch (e) {}
   }
 
   @override
@@ -142,119 +142,130 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
           ScheduleScreenPresenter(this, AppScopeWidget.of(context), Parser());
       presenter.checkAppVersion(context);
     }
-    return Scaffold(
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: AnimatedOpacity(
-          opacity: height == MAX_APPBAR_HEIGHT ? 1 : 0,
-          duration: Duration(milliseconds: 200),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 30),
-            child: FloatingActionButton.extended(
-              elevation: 4.0,
-              backgroundColor: Theme.of(context).buttonColor,
-              icon: const Icon(
-                Icons.history,
-                color: Colors.white,
-              ),
-              label: const Text('Сменить неделю',
-                  style: TextStyle(color: Colors.white)),
-              onPressed: () async {
-                AppScopeWidget.of(context).adManager.hideMainBanner();
-                showModalBottomSheet(
-                    context: context,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
-                      ),
-                    ),
-                    builder: ((_) {
-                      return Column(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(top: 5, bottom: 5),
-                            child: Container(
-                              height: 4,
-                              width: 60,
-                              decoration: BoxDecoration(
-                                  color: Colors.grey,
-                                  borderRadius: BorderRadius.circular(20)),
-                            ),
+    return Container(
+      color: Theme.of(context).backgroundColor,
+      child: SafeArea(
+        child: Scaffold(
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
+            floatingActionButton: AnimatedOpacity(
+              opacity: height == MAX_APPBAR_HEIGHT ? 1 : 0,
+              duration: Duration(milliseconds: 200),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 30),
+                child: FloatingActionButton.extended(
+                  elevation: 4.0,
+                  backgroundColor: Theme.of(context).buttonColor,
+                  icon: const Icon(
+                    Icons.history,
+                    color: Colors.white,
+                  ),
+                  label: const Text('Сменить неделю',
+                      style: TextStyle(color: Colors.white)),
+                  onPressed: () async {
+                    AppScopeWidget.of(context).adManager.hideMainBanner();
+                    showModalBottomSheet(
+                        context: context,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
                           ),
-                          WeeksWidget(weeks: presenter.weekList)
-                        ],
-                      );
-                    })).then((result) {
-                  AppScopeWidget.of(context).remoteConfig.then((remoteConfig) {
-                    AppScopeWidget.of(context)
-                        .adManager
-                        .showMainBanner(remoteConfig);
-                    if (result != null && result.containsKey('week')) {
-                      presenter.currentWeek = result['week'];
-                      forceRefresh();
-                      //presenter.refreshSchedule(week: );
-                    }
-                  });
-                });
-              },
+                        ),
+                        builder: ((_) {
+                          return Column(
+                            children: <Widget>[
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(top: 5, bottom: 5),
+                                child: Container(
+                                  height: 4,
+                                  width: 60,
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey,
+                                      borderRadius: BorderRadius.circular(20)),
+                                ),
+                              ),
+                              WeeksWidget(weeks: presenter.weekList)
+                            ],
+                          );
+                        })).then((result) {
+                      AppScopeWidget.of(context)
+                          .remoteConfig
+                          .then((remoteConfig) {
+                        AppScopeWidget.of(context)
+                            .adManager
+                            .showMainBanner(remoteConfig);
+                        if (result != null && result.containsKey('week')) {
+                          presenter.currentWeek = result['week'];
+                          forceRefresh();
+                          //presenter.refreshSchedule(week: );
+                        }
+                      });
+                    });
+                  },
+                ),
+              ),
             ),
-          ),
-        ),
-        key: _key,
-        bottomNavigationBar: PreferredSize(
-          preferredSize: Size(
-            width,
-            height,
-          ),
-          child: AnimatedContainer(
-            duration: Duration(milliseconds: 500),
-            height: height,
-            child: BottomAppBar(
-                elevation: 2,
-                color: Theme.of(context).bottomAppBarColor,
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    IconButton(
-                      icon: Icon(
-                        Icons.menu,
-                        color: FONT_COLOR_2,
-                      ),
-                      onPressed: () async {
-                        AppScopeWidget.of(context).adManager.hideMainBanner();
-                        final userScheduleInfo =
-                            await presenter.userScheduleInfo;
-                        final personInfo =
-                            await presenter.appScopeData.personInfo();
-                        showModalBottomSheet(
-                            context: context,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  topRight: Radius.circular(20)),
-                            ),
-                            builder: ((_) {
-                              return MenuWidget(
-                                  presenter: this.presenter,
-                                  userScheduleInfo: userScheduleInfo,
-                                  personInfo: personInfo);
-                            })).then((_) {
-                          AppScopeWidget.of(context)
-                              .remoteConfig
-                              .then((remoteConfig) {
+            key: _key,
+            bottomNavigationBar: PreferredSize(
+              preferredSize: Size(
+                width,
+                height,
+              ),
+              child: AnimatedContainer(
+                duration: Duration(milliseconds: 500),
+                height: height,
+                child: BottomAppBar(
+                    elevation: 2,
+                    color: Theme.of(context).bottomAppBarColor,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(
+                            Icons.menu,
+                            color: FONT_COLOR_2,
+                          ),
+                          onPressed: () async {
                             AppScopeWidget.of(context)
                                 .adManager
-                                .showMainBanner(remoteConfig);
-                          });
-                        });
-                      },
-                    ),
-                  ],
-                )),
-          ),
-        ),
-        body:
-            Container(color: Theme.of(context).backgroundColor, child: body()));
+                                .hideMainBanner();
+                            final userScheduleInfo =
+                                await presenter.userScheduleInfo;
+                            final personInfo =
+                                await presenter.appScopeData.personInfo();
+                            showModalBottomSheet(
+                                context: context,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(20),
+                                      topRight: Radius.circular(20)),
+                                ),
+                                builder: ((_) {
+                                  return MenuWidget(
+                                      presenter: this.presenter,
+                                      userScheduleInfo: userScheduleInfo,
+                                      personInfo: personInfo);
+                                })).then((_) {
+                              AppScopeWidget.of(context)
+                                  .remoteConfig
+                                  .then((remoteConfig) {
+                                AppScopeWidget.of(context)
+                                    .adManager
+                                    .showMainBanner(remoteConfig);
+                              });
+                            });
+                          },
+                        ),
+                      ],
+                    )),
+              ),
+            ),
+            body: Container(
+                color: Theme.of(context).backgroundColor, child: body())),
+      ),
+    );
   }
 
   Widget body() {

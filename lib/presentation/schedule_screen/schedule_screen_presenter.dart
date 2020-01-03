@@ -60,6 +60,8 @@ class ScheduleScreenPresenter {
     if (newSchedule != null) {
       schedule = newSchedule;
       if (currentWeek == 0) appScopeData.setSchedule(newSchedule);
+      if (view.selectedPage >= newSchedule.days.length - 1)
+        view.selectedPage = newSchedule.days.length - 1;
       view.update();
       view.pageController.animateToPage(0,
           duration: Duration(milliseconds: 1000), curve: Curves.ease);
