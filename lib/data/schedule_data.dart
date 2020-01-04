@@ -21,12 +21,10 @@ class Schedule {
     if (days.length == newSchedule.days.length) {
       for (int i = 0; i < days.length; i++) {
         if (days[i].data == newSchedule.days[i].data &&
-            days[i].lessons.length == newSchedule.days[i].lessons.length) {
-          
-        }
-        else return false;
+            days[i].lessons.length == newSchedule.days[i].lessons.length) {}
       }
-    } else return false;
+    }
+    return false;
   }
 }
 

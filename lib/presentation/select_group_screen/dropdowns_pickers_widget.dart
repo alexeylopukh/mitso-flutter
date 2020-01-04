@@ -8,11 +8,7 @@ const KURS_HINT = 'Курс';
 const GROUP_HINT = 'Группа';
 
 class DropDownsPickers extends StatefulWidget {
-  String fakulty;
-  String form;
-  String cours;
-  String group;
-  Parser parser = Parser();
+  final Parser parser = Parser();
 
   DropDownsPickers({Key key}) : super(key: key);
 
@@ -23,6 +19,11 @@ class DropDownsPickers extends StatefulWidget {
 }
 
 class DropDownsPickersState extends State<DropDownsPickers> {
+  String fakulty;
+  String form;
+  String cours;
+  String group;
+
   final decoration = ShapeDecoration(
     color: MAIN_COLOR_2,
     shape: RoundedRectangleBorder(
@@ -65,16 +66,16 @@ class DropDownsPickersState extends State<DropDownsPickers> {
                       child: DropdownButton<String>(
                           style: textStyle,
                           icon: icon,
-                          value: widget.fakulty == null ? null : widget.fakulty,
+                          value: fakulty == null ? null : fakulty,
                           hint: Center(
                             child: Text(FAK_HINT, style: hintStyle),
                           ),
                           onChanged: (String value) {
                             setState(() {
-                              widget.fakulty = value;
-                              widget.form = null;
-                              widget.cours = null;
-                              widget.group = null;
+                              fakulty = value;
+                              form = null;
+                              cours = null;
+                              group = null;
                             });
                           },
                           items: snapshot.data
@@ -90,10 +91,10 @@ class DropDownsPickersState extends State<DropDownsPickers> {
               ),
               Padding(
                 padding: pickerPadding,
-                child: widget.fakulty == null
+                child: fakulty == null
                     ? Container()
                     : FutureBuilder(
-                        future: widget.parser.getFormList(widget.fakulty),
+                        future: widget.parser.getFormList(fakulty),
                         builder: (BuildContext context,
                             AsyncSnapshot<List<String>> snapshot) {
                           if (!snapshot.hasData)
@@ -107,15 +108,14 @@ class DropDownsPickersState extends State<DropDownsPickers> {
                               child: DropdownButton<String>(
                                   style: textStyle,
                                   icon: icon,
-                                  value:
-                                      widget.form == null ? null : widget.form,
+                                  value: form == null ? null : form,
                                   hint: Center(
                                       child: Text(FORM_HINT, style: hintStyle)),
                                   onChanged: (String value) {
                                     setState(() {
-                                      widget.form = value;
-                                      widget.cours = null;
-                                      widget.group = null;
+                                      form = value;
+                                      cours = null;
+                                      group = null;
                                     });
                                   },
                                   items: snapshot.data
@@ -133,11 +133,10 @@ class DropDownsPickersState extends State<DropDownsPickers> {
               ),
               Padding(
                 padding: pickerPadding,
-                child: widget.form == null
+                child: form == null
                     ? Container()
                     : FutureBuilder(
-                        future: widget.parser
-                            .getKursList(widget.form, widget.fakulty),
+                        future: widget.parser.getKursList(form, fakulty),
                         builder: (BuildContext context,
                             AsyncSnapshot<List<String>> snapshot) {
                           if (!snapshot.hasData)
@@ -151,15 +150,13 @@ class DropDownsPickersState extends State<DropDownsPickers> {
                               child: DropdownButton<String>(
                                   style: textStyle,
                                   icon: icon,
-                                  value: widget.cours == null
-                                      ? null
-                                      : widget.cours,
+                                  value: cours == null ? null : cours,
                                   hint: Center(
                                       child: Text(KURS_HINT, style: hintStyle)),
                                   onChanged: (String value) {
                                     setState(() {
-                                      widget.cours = value;
-                                      widget.group = null;
+                                      cours = value;
+                                      group = null;
                                     });
                                   },
                                   items: snapshot.data
@@ -180,11 +177,11 @@ class DropDownsPickersState extends State<DropDownsPickers> {
               ),
               Padding(
                 padding: pickerPadding,
-                child: widget.cours == null
+                child: cours == null
                     ? Container()
                     : FutureBuilder(
-                        future: widget.parser.getGroupList(
-                            widget.form, widget.fakulty, widget.cours),
+                        future:
+                            widget.parser.getGroupList(form, fakulty, cours),
                         builder: (BuildContext context,
                             AsyncSnapshot<List<String>> snapshot) {
                           if (!snapshot.hasData)
@@ -198,9 +195,7 @@ class DropDownsPickersState extends State<DropDownsPickers> {
                               child: DropdownButton<String>(
                                   style: textStyle,
                                   icon: icon,
-                                  value: widget.group == null
-                                      ? null
-                                      : widget.group,
+                                  value: group == null ? null : group,
                                   hint: Center(
                                       child: Text(
                                     GROUP_HINT,
@@ -208,7 +203,7 @@ class DropDownsPickersState extends State<DropDownsPickers> {
                                   )),
                                   onChanged: (String value) {
                                     setState(() {
-                                      widget.group = value;
+                                      group = value;
                                     });
                                   },
                                   items: snapshot.data

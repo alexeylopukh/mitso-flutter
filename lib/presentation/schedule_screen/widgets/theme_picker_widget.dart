@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
-import 'package:mitso/main.dart';
 
 class ThemePickerWidget extends StatefulWidget {
   @override

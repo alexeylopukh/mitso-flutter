@@ -33,15 +33,4 @@ class Themes {
               fontFamily: 'Montserrat-Light',
               color: Color(0xff515F79),
               fontSize: 13)));
-
-  static ThemeData getThemeFromKey(ThemesKey key) {
-    switch (key) {
-      case ThemesKey.Light:
-        return light;
-        break;
-      case ThemesKey.Dark:
-        return dark;
-        break;
-    }
-  }
 }

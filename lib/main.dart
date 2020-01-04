@@ -10,8 +10,6 @@ import 'package:mitso/presentation/select_group_screen/select_group_screen.dart'
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:mitso/thems.dart';
 
-import 'app_theme.dart';
-
 void main() {
   runApp(MyApp());
 }

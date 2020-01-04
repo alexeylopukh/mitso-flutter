@@ -12,7 +12,6 @@ class PageItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(color: Theme.of(context).backgroundColor),
       child: Column(
         children: <Widget>[
           Expanded(

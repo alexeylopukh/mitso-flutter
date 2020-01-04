@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:mitso/ad_manager.dart';
 import 'package:mitso/data/person_info_data.dart';
@@ -107,7 +106,7 @@ class AppScopeData {
 }
 
 class _AppScopeWidget extends InheritedWidget {
-  AppScopeWidgetState state;
+  final AppScopeWidgetState state;
   AppScopeData data;
 
   _AppScopeWidget({Key key, @required Widget child, @required this.state})
@@ -120,14 +119,12 @@ class _AppScopeWidget extends InheritedWidget {
 }
 
 class AppScopeWidget extends StatefulWidget {
-  Widget child;
+  final Widget child;
 
   AppScopeWidget({Key key, @required this.child}) : super(key: key);
 
   static AppScopeData of(BuildContext context) {
-    return (context.inheritFromWidgetOfExactType(_AppScopeWidget)
-            as _AppScopeWidget)
-        .data;
+    return context.dependOnInheritedWidgetOfExactType<_AppScopeWidget>().data;
   }
 
   @override

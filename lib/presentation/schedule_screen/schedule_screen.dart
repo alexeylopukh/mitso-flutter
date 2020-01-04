@@ -6,11 +6,13 @@ import 'package:mitso/data/app_scope_data.dart';
 import 'package:mitso/data/schedule_data.dart';
 import 'package:mitso/interactor/get_digit_from_string.dart';
 import 'package:mitso/interactor/parser.dart';
+import 'package:mitso/presentation/schedule_screen/widgets/background_widget.dart';
 import 'package:mitso/presentation/schedule_screen/widgets/menu_widget.dart';
 import 'package:mitso/presentation/schedule_screen/widgets/page_item_widget.dart';
 import 'package:mitso/presentation/schedule_screen/schedule_screen_presenter.dart';
 import 'package:mitso/presentation/schedule_screen/widgets/schedule_widget/weeks_widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:vibration/vibration.dart';
 import '../../app_theme.dart';
 
 class ScheduleScreen extends StatelessWidget {
@@ -49,10 +51,14 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
   int selectedPage = 0;
   bool isFirstView = true;
 
+  bool hasVibrator = false;
+
   @override
   void initState() {
     super.initState();
-
+    Vibration.hasVibrator().then((result) {
+      hasVibrator = result;
+    });
     scrollController = ScrollController();
     /*
     _hideButtonController.addListener(() {
@@ -112,12 +118,18 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
   }
 
   void pageChanged(int index) {
+    if (hasVibrator) {
+      Vibration.vibrate(duration: 5);
+    }
     setState(() {
       selectedPage = index;
     });
   }
 
   void tabTapped(int index) {
+    if (hasVibrator) {
+      Vibration.vibrate(duration: 5);
+    }
     try {
       selectedPage = index;
       pageController.animateToPage(index,
@@ -262,8 +274,9 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
                     )),
               ),
             ),
-            body: Container(
-                color: Theme.of(context).backgroundColor, child: body())),
+            body: Stack(
+              children: <Widget>[BackgroundWidget(), body()],
+            )),
       ),
     );
   }

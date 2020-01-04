@@ -9,8 +9,7 @@ const BUTTON_TEXT = 'Найти расписание';
 const TITLE_TEXT = 'Выбери свою группу:';
 
 class SelectGroupScreen extends StatelessWidget {
-  PersistentBottomSheetController _controller;
-  GlobalKey<ScaffoldState> _key = GlobalKey();
+  final GlobalKey<ScaffoldState> _key = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -54,16 +53,16 @@ class SelectGroupScreen extends StatelessWidget {
                     label: const Text(BUTTON_TEXT,
                         style: TextStyle(color: MAIN_COLOR_2)),
                     onPressed: () {
-                      final form = dropDownKey.currentState.widget.form;
-                      final fak = dropDownKey.currentState.widget.fakulty;
-                      final kurs = dropDownKey.currentState.widget.cours;
-                      final group = dropDownKey.currentState.widget.group;
+                      final form = dropDownKey.currentState.form;
+                      final fak = dropDownKey.currentState.fakulty;
+                      final kurs = dropDownKey.currentState.cours;
+                      final group = dropDownKey.currentState.group;
 
                       if (form == null ||
                           fak == null ||
                           kurs == null ||
                           group == null) {
-                        _controller = _key.currentState.showBottomSheet(
+                        _key.currentState.showBottomSheet(
                             (_) => SizedBox(
                                   child: Container(
                                       decoration: BoxDecoration(

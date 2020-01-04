@@ -38,10 +38,6 @@ class AdManager {
         listener: (MobileAdEvent event) async {
           switch (event) {
             case MobileAdEvent.loaded:
-              if (!isMainBannerShowed)
-                hideMainBanner();
-              else
-                isMainBannerShowedStream.add(true);
               break;
             case MobileAdEvent.failedToLoad:
               break;
@@ -60,18 +56,24 @@ class AdManager {
               break;
           }
         });
-
-    mainBanner
-      ..load()
-      ..show(
-        anchorOffset: 60.0,
-      );
+    mainBanner.load().then((result) {
+      if (result && isMainBannerShowed)
+        mainBanner.show(anchorOffset: 60.0).then((_) {
+          if (!isMainBannerShowed) hideMainBanner();
+        });
+    });
   }
 
   hideMainBanner() {
-    isMainBannerShowed = false;
-    isMainBannerShowedStream.add(false);
-    mainBanner?.dispose();
-    mainBanner = null;
+    try {
+      isMainBannerShowed = false;
+      isMainBannerShowedStream.add(false);
+      mainBanner.dispose().then((_) {
+        mainBanner = null;
+      });
+    } catch (e) {
+      print(e);
+      mainBanner = null;
+    }
   }
 }

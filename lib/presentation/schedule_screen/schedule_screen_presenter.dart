@@ -14,7 +14,6 @@ class ScheduleScreenPresenter {
   final AppScopeData appScopeData;
   Parser parser;
   List<String> weekList;
-  UserScheduleInfo _userScheduleInfo;
   Schedule schedule;
   ScheduleStatus scheduleStatus = ScheduleStatus.LoadFromStorage;
 
@@ -23,7 +22,7 @@ class ScheduleScreenPresenter {
   bool isAdShowed;
 
   Future<UserScheduleInfo> get userScheduleInfo async {
-    return _userScheduleInfo = await appScopeData.userScheduleInfo();
+    return await appScopeData.userScheduleInfo();
   }
 
   ScheduleScreenPresenter(this.view, this.appScopeData, this.parser) {
@@ -56,7 +55,6 @@ class ScheduleScreenPresenter {
         .getSchedule(userInfo: userInfo, week: currentWeek)
         .catchError((error) => goToCurrentDay());
     view.completeRefresh();
-    final isNew = schedule.toMap() != newSchedule.toMap();
     if (newSchedule != null) {
       schedule = newSchedule;
       if (currentWeek == 0) appScopeData.setSchedule(newSchedule);
