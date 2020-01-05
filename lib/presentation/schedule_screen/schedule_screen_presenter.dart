@@ -17,6 +17,7 @@ class ScheduleScreenPresenter {
   Schedule schedule;
   ScheduleStatus scheduleStatus = ScheduleStatus.LoadFromStorage;
 
+  int firstWeek = 0;
   int currentWeek = 0;
 
   bool isAdShowed;
@@ -32,7 +33,7 @@ class ScheduleScreenPresenter {
         scheduleStatus = ScheduleStatus.Loaded;
         view.update();
       } else
-        loadSchedule();
+        loadAll();
     });
 
     isAdShowed = false;
@@ -47,8 +48,39 @@ class ScheduleScreenPresenter {
     parser.getPhysicalEducationSchedule();
   }
 
+  loadAll() async {
+    final weeksWork = loadWeeks();
+    updPerson();
+    scheduleStatus = ScheduleStatus.FirstLoad;
+    view.update();
+    final userInfo = await appScopeData.userScheduleInfo();
+    final result =
+        await parser.getSchedule(userInfo: userInfo, week: firstWeek);
+    if (result != null) {
+      schedule = result;
+      scheduleStatus = ScheduleStatus.Loaded;
+      appScopeData.setSchedule(schedule);
+    } else {
+      await weeksWork;
+      if (weekList != null && weekList.length != 0) {
+        firstWeek = GetDigitFromString(text: weekList.first).execute() - 1;
+        currentWeek = firstWeek;
+        final result =
+            await parser.getSchedule(userInfo: userInfo, week: firstWeek);
+        if (result != null) {
+          schedule = result;
+          appScopeData.setSchedule(schedule);
+          scheduleStatus = ScheduleStatus.Loaded;
+        } else
+          scheduleStatus = ScheduleStatus.Empty;
+      } else
+        scheduleStatus = ScheduleStatus.Empty;
+    }
+    view.update();
+  }
+
   refreshSchedule() async {
-    loadWeeks();
+    final weeksWork = loadWeeks();
     updPerson();
     final userInfo = await appScopeData.userScheduleInfo();
     final newSchedule = await Parser()
@@ -57,14 +89,31 @@ class ScheduleScreenPresenter {
     view.completeRefresh();
     if (newSchedule != null) {
       schedule = newSchedule;
-      if (currentWeek == 0) appScopeData.setSchedule(newSchedule);
+      if (currentWeek == firstWeek) appScopeData.setSchedule(newSchedule);
       if (view.selectedPage >= newSchedule.days.length - 1)
         view.selectedPage = newSchedule.days.length - 1;
       view.update();
       view.pageController.animateToPage(0,
           duration: Duration(milliseconds: 1000), curve: Curves.ease);
       goToCurrentDay();
+      return;
+    } else {
+      await weeksWork;
+      if (weekList != null && weekList.length != 0) {
+        firstWeek = GetDigitFromString(text: weekList.first).execute() - 1;
+        currentWeek = firstWeek;
+        final result =
+            await parser.getSchedule(userInfo: userInfo, week: firstWeek);
+        if (result != null) {
+          schedule = result;
+          appScopeData.setSchedule(schedule);
+          scheduleStatus = ScheduleStatus.Loaded;
+        } else
+          scheduleStatus = ScheduleStatus.Empty;
+      } else
+        scheduleStatus = ScheduleStatus.Empty;
     }
+    view.update();
   }
 
   loadWeeks() async {
@@ -128,24 +177,6 @@ class ScheduleScreenPresenter {
     }
   }
 
-  loadSchedule() async {
-    loadWeeks();
-    updPerson();
-    scheduleStatus = ScheduleStatus.FirstLoad;
-    view.update();
-    final userInfo = await appScopeData.userScheduleInfo();
-    final result = await parser.getSchedule(userInfo: userInfo);
-    if (result != null) {
-      schedule = result;
-      scheduleStatus = ScheduleStatus.Loaded;
-      appScopeData.setSchedule(schedule);
-      view.update();
-    } else {
-      scheduleStatus = ScheduleStatus.Empty;
-      view.update();
-    }
-  }
-
   updPerson() async {
     final oldPersonInfo = await appScopeData.personInfo();
     if (oldPersonInfo == null) return;
@@ -190,10 +221,6 @@ class ScheduleScreenPresenter {
   showDebtNotification(double debt) {
     NotificationManager().sendNotification(
         'Задолженность', 'У ваc образовалась задоженность $debt р.');
-  }
-
-  updateWeeks() async {
-    weekList = await loadWeeks();
   }
 
   String getShortNameOfDayWeek(String longName) {

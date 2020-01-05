@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:sensors/sensors.dart';
 
@@ -10,9 +12,13 @@ class BackgroundWidget extends StatefulWidget {
 
 class BackgroundWidgetState extends State<BackgroundWidget> {
   Alignment alignment = Alignment(0, 0);
+  StreamSubscription listener;
   @override
   Widget build(BuildContext context) {
-    listener();
+    listener = accelerometerEvents.listen((AccelerometerEvent event) {
+      alignment = Alignment(event.x * 0.3, event.y * 0.3);
+      if (mounted) setState(() {});
+    });
     return Container(
       width: double.infinity,
       height: double.infinity,
@@ -29,11 +35,9 @@ class BackgroundWidgetState extends State<BackgroundWidget> {
     );
   }
 
-  listener() {
-    accelerometerEvents.listen((AccelerometerEvent event) {
-      print(event);
-      alignment = Alignment(event.x * 0.3, event.y * 0.3);
-      setState(() {});
-    });
+  @override
+  void dispose() {
+    listener.cancel();
+    super.dispose();
   }
 }

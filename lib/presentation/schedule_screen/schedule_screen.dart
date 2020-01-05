@@ -127,9 +127,6 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
   }
 
   void tabTapped(int index) {
-    if (hasVibrator) {
-      Vibration.vibrate(duration: 5);
-    }
     try {
       selectedPage = index;
       pageController.animateToPage(index,
@@ -172,7 +169,11 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
                     Icons.history,
                     color: Colors.white,
                   ),
-                  label: const Text('Сменить неделю',
+                  label: Text(
+                      (presenter.currentWeek == 0
+                              ? 'Текущая'
+                              : '${presenter.currentWeek + 1}') +
+                          ' неделя',
                       style: TextStyle(color: Colors.white)),
                   onPressed: () async {
                     AppScopeWidget.of(context).adManager.hideMainBanner();
@@ -291,7 +292,12 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
         );
         break;
       case ScheduleStatus.Empty:
-        return Center(child: Text('Рассписание отсуствует'));
+        return Center(
+            child: Text('Расписание отсутствует',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: FONT_COLOR_2)));
         break;
       case ScheduleStatus.Loaded:
         return pageView(presenter.schedule.days, pageController);
@@ -380,7 +386,7 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
   }
 
   update() {
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   @override
