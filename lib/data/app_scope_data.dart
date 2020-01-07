@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mitso/ad_manager.dart';
+import 'package:mitso/data/app_settings.dart';
 import 'package:mitso/data/person_info_data.dart';
 import 'package:mitso/data/remote_config_data.dart';
 import 'package:mitso/data/schedule_data.dart';
@@ -9,6 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AppScopeData {
   AppScopeWidgetState state;
+
+  AppSettings appSettings = AppSettings();
 
   FirebaseAnalyticsHelper _analyticsHelper;
 
@@ -21,9 +24,25 @@ class AppScopeData {
   RemoteConfigData _remoteConfig;
 
   AppScopeData({@required this.state}) {
+    loadAppSettings();
     _loadRemoteConfig();
     _analyticsHelper = FirebaseAnalyticsHelper();
     _adManager = AdManager();
+  }
+
+  Future loadAppSettings() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      final json = jsonDecode(prefs.getString('app_settings'));
+      appSettings = AppSettings.fromJson(json);
+    } catch (error) {}
+  }
+
+  Future saveAppSettings() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      prefs.setString('app_settings', jsonEncode(appSettings.toJson()));
+    } catch (error) {}
   }
 
   _loadRemoteConfig() async {

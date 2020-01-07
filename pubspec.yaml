@@ -1,7 +1,7 @@
 name: mitso
 description: MITSO - class schedule
 
-version: 3.0.2
+version: 3.0.3
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -35,7 +35,6 @@ flutter:
 
   assets:
     - assets/images/chip.png
-    - assets/images/background.png
 
   fonts:
     - family: Montserrat-Bold

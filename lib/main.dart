@@ -56,7 +56,9 @@ class MyAppState extends State<MyApp> {
                 return createMaterialApp(ScheduleScreenWidget());
               if (snapshot.data == null)
                 return createMaterialApp(SelectGroupScreen());
-              return Container();
+              return Container(
+                color: Colors.deepPurple,
+              );
             });
       }),
     );

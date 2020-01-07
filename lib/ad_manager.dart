@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:firebase_admob/firebase_admob.dart';
 
 import 'data/remote_config_data.dart';
@@ -14,6 +13,7 @@ class AdManager {
 
   StreamController<bool> isMainBannerShowedStream = StreamController<bool>();
   bool isMainBannerShowed = false;
+  bool canLaunchAd = true;
 
   AdManager() {
     isMainBannerShowedStream.add(false);
@@ -27,53 +27,68 @@ class AdManager {
   }
 
   showMainBanner(RemoteConfigData remoteConfigData) {
-    if (mainBanner != null || !remoteConfigData.showAd) {
+    if (!remoteConfigData.showAd || isMainBannerShowed) {
       return;
     }
     isMainBannerShowed = true;
-    mainBanner = BannerAd(
-        adUnitId: _mainBlockId,
-        size: AdSize.smartBanner,
-        targetingInfo: targetingInfo,
-        listener: (MobileAdEvent event) async {
-          switch (event) {
-            case MobileAdEvent.loaded:
-              break;
-            case MobileAdEvent.failedToLoad:
-              break;
-            case MobileAdEvent.clicked:
-              hideMainBanner();
-              break;
-            case MobileAdEvent.impression:
-              break;
-            case MobileAdEvent.opened:
-              hideMainBanner();
-              break;
-            case MobileAdEvent.leftApplication:
-              break;
-            case MobileAdEvent.closed:
-              hideMainBanner();
-              break;
-          }
-        });
-    mainBanner.load().then((result) {
-      if (result && isMainBannerShowed)
-        mainBanner.show(anchorOffset: 60.0).then((_) {
-          if (!isMainBannerShowed) hideMainBanner();
-        });
+    Future.delayed(Duration(milliseconds: 500)).then((_) {
+      print('call show ad');
+      if (!remoteConfigData.showAd || !isMainBannerShowed) {
+        return;
+      }
+      mainBanner = BannerAd(
+          adUnitId: _mainBlockId,
+          size: AdSize.smartBanner,
+          targetingInfo: targetingInfo,
+          listener: (MobileAdEvent event) {
+            switch (event) {
+              case MobileAdEvent.loaded:
+                break;
+              case MobileAdEvent.failedToLoad:
+                break;
+              case MobileAdEvent.clicked:
+                hideMainBanner();
+                break;
+              case MobileAdEvent.impression:
+                break;
+              case MobileAdEvent.opened:
+                hideMainBanner();
+                break;
+              case MobileAdEvent.leftApplication:
+                break;
+              case MobileAdEvent.closed:
+                hideMainBanner();
+                break;
+            }
+          });
+      mainBanner.load().then((result) {
+        print('loaded');
+        if (result && isMainBannerShowed && canLaunchAd)
+          mainBanner.show(anchorOffset: 60.0).then((_) {
+            print('showed');
+            if (!isMainBannerShowed && !canLaunchAd) hideMainBanner();
+          });
+      });
     });
   }
 
-  hideMainBanner() {
+  hideMainBanner({bool repeat = true}) async {
+    int intervalMs = 100;
+    int seconds = 1;
+    await Future.delayed(Duration(milliseconds: 1000));
+    _disposeAdBanner();
+    for (int i = 0; i < seconds * 8; i++) {
+      await Future.delayed(Duration(milliseconds: intervalMs));
+      _disposeAdBanner();
+    }
+  }
+
+  _disposeAdBanner() {
     try {
       isMainBannerShowed = false;
       isMainBannerShowedStream.add(false);
-      mainBanner.dispose().then((_) {
-        mainBanner = null;
-      });
-    } catch (e) {
-      print(e);
+      mainBanner.dispose();
       mainBanner = null;
-    }
+    } catch (e) {}
   }
 }

@@ -118,7 +118,8 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
   }
 
   void pageChanged(int index) {
-    if (hasVibrator) {
+    if (hasVibrator &&
+        AppScopeWidget.of(context).appSettings.isVibrationEnabled) {
       Vibration.vibrate(duration: 5);
     }
     setState(() {
@@ -176,8 +177,10 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
                           ' неделя',
                       style: TextStyle(color: Colors.white)),
                   onPressed: () async {
+                    AppScopeWidget.of(context).adManager.canLaunchAd = false;
                     AppScopeWidget.of(context).adManager.hideMainBanner();
                     showModalBottomSheet(
+                        isScrollControlled: true,
                         context: context,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
@@ -186,23 +189,32 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
                           ),
                         ),
                         builder: ((_) {
-                          return Column(
+                          return Wrap(
                             children: <Widget>[
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(top: 5, bottom: 5),
-                                child: Container(
-                                  height: 4,
-                                  width: 60,
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey,
-                                      borderRadius: BorderRadius.circular(20)),
+                              Container(
+                                child: Column(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 5, bottom: 5),
+                                      child: Container(
+                                        height: 4,
+                                        width: 60,
+                                        decoration: BoxDecoration(
+                                            color: Colors.grey,
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                      ),
+                                    ),
+                                    WeeksWidget(weeks: presenter.weekList)
+                                  ],
                                 ),
-                              ),
-                              WeeksWidget(weeks: presenter.weekList)
+                                width: double.infinity,
+                              )
                             ],
                           );
                         })).then((result) {
+                      AppScopeWidget.of(context).adManager.canLaunchAd = true;
                       AppScopeWidget.of(context)
                           .remoteConfig
                           .then((remoteConfig) {
@@ -240,33 +252,46 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
                             Icons.menu,
                             color: FONT_COLOR_2,
                           ),
-                          onPressed: () async {
+                          onPressed: () {
+                            AppScopeWidget.of(context).adManager.canLaunchAd =
+                                false;
                             AppScopeWidget.of(context)
                                 .adManager
                                 .hideMainBanner();
-                            final userScheduleInfo =
-                                await presenter.userScheduleInfo;
-                            final personInfo =
-                                await presenter.appScopeData.personInfo();
-                            showModalBottomSheet(
-                                context: context,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(20),
-                                      topRight: Radius.circular(20)),
-                                ),
-                                builder: ((_) {
-                                  return MenuWidget(
-                                      presenter: this.presenter,
-                                      userScheduleInfo: userScheduleInfo,
-                                      personInfo: personInfo);
-                                })).then((_) {
-                              AppScopeWidget.of(context)
-                                  .remoteConfig
-                                  .then((remoteConfig) {
-                                AppScopeWidget.of(context)
-                                    .adManager
-                                    .showMainBanner(remoteConfig);
+                            presenter.userScheduleInfo.then((userScheduleInfo) {
+                              presenter.appScopeData
+                                  .personInfo()
+                                  .then((personInfo) {
+                                showModalBottomSheet(
+                                    isScrollControlled: true,
+                                    context: context,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(20),
+                                          topRight: Radius.circular(20)),
+                                    ),
+                                    builder: ((_) {
+                                      return Wrap(
+                                        children: <Widget>[
+                                          MenuWidget(
+                                              presenter: this.presenter,
+                                              userScheduleInfo:
+                                                  userScheduleInfo,
+                                              personInfo: personInfo),
+                                        ],
+                                      );
+                                    })).then((_) {
+                                  AppScopeWidget.of(context)
+                                      .adManager
+                                      .canLaunchAd = true;
+                                  AppScopeWidget.of(context)
+                                      .remoteConfig
+                                      .then((remoteConfig) {
+                                    AppScopeWidget.of(context)
+                                        .adManager
+                                        .showMainBanner(remoteConfig);
+                                  });
+                                });
                               });
                             });
                           },

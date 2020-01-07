@@ -23,9 +23,7 @@ class WeeksWidgetState extends State<WeeksWidget> {
           view: this,
           appScopeData: AppScopeWidget.of(context),
           weeks: widget.weeks);
-    return Expanded(
-      child: generateBody(),
-    );
+    return generateBody();
   }
 
   Widget generateBody() {
@@ -40,28 +38,30 @@ class WeeksWidgetState extends State<WeeksWidget> {
   }
 
   Widget weeksWidget() {
-    return ListView.builder(
-        itemCount: presenter.weeks.length,
-        itemBuilder: (context, index) => Padding(
-              padding: EdgeInsets.only(right: 20, left: 20, bottom: 5),
-              child: OutlineButton(
-                borderSide: BorderSide(color: FONT_COLOR_2, width: 2),
-                shape: StadiumBorder(),
-                child: Text(presenter.weeks[index],
-                    style: TextStyle(color: FONT_COLOR_2, fontSize: 18)),
-                onPressed: () {
-                  int week;
-                  try {
-                    week = GetDigitFromString(text: presenter.weeks[index])
-                            .execute() -
-                        1;
-                  } catch (e) {
-                    week = 0;
-                  }
-                  Navigator.of(context).pop({'week': week});
-                },
-              ),
-            ));
+    final List<Widget> result = [];
+    presenter.weeks.forEach((String weekName) {
+      result.add(Padding(
+        padding: EdgeInsets.only(right: 20, left: 20, bottom: 5),
+        child: OutlineButton(
+          borderSide: BorderSide(color: FONT_COLOR_2, width: 2),
+          shape: StadiumBorder(),
+          child: Text(weekName,
+              style: TextStyle(color: FONT_COLOR_2, fontSize: 18)),
+          onPressed: () {
+            int week;
+            try {
+              week = GetDigitFromString(text: weekName).execute() - 1;
+            } catch (e) {
+              week = 0;
+            }
+            Navigator.of(context).pop({'week': week});
+          },
+        ),
+      ));
+    });
+    return Column(
+      children: result,
+    );
   }
 
   Widget loadingWidget() {

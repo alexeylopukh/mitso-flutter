@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:sensors/sensors.dart';
 
 class BackgroundWidget extends StatefulWidget {
   @override
@@ -15,23 +14,23 @@ class BackgroundWidgetState extends State<BackgroundWidget> {
   StreamSubscription listener;
   @override
   Widget build(BuildContext context) {
-    listener = accelerometerEvents.listen((AccelerometerEvent event) {
-      alignment = Alignment(event.x * 0.3, event.y * 0.3);
-      if (mounted) setState(() {});
-    });
+//    listener = accelerometerEvents.listen((AccelerometerEvent event) {
+//      alignment = Alignment(event.x * 0.3, event.y * 0.3);
+//      if (mounted) setState(() {});
+//    });
     return Container(
       width: double.infinity,
       height: double.infinity,
       decoration: BoxDecoration(color: Theme.of(context).backgroundColor),
-      child: AnimatedAlign(
-        alignment: alignment,
-        curve: Curves.ease,
-        duration: Duration(milliseconds: 200),
-        child: Image.asset(
-          'assets/images/background.png',
-          color: Color(0xff40404D),
-        ),
-      ),
+//      child: AnimatedAlign(
+//        alignment: alignment,
+//        curve: Curves.ease,
+//        duration: Duration(milliseconds: 200),
+//        child: Image.asset(
+//          'assets/images/background.png',
+//          color: Color(0xff40404D),
+//        ),
+//      ),
     );
   }
 

@@ -210,7 +210,8 @@ class ScheduleScreenPresenter {
   checkAppVersion(BuildContext context) async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     final config = await appScopeData.remoteConfig;
-    if (config.actualVersion != packageInfo.version) {
+    if (config.actualVersion != packageInfo.version ||
+        config.secondActualVersion != packageInfo.version) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => UpdateMessageScreen()),
