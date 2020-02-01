@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart' as material;
 import 'package:html/parser.dart';
 import 'package:html/dom.dart';
@@ -5,32 +8,33 @@ import 'package:http/http.dart' as http;
 import 'package:mitso/data/person_info_data.dart';
 import 'package:mitso/data/physical_schedule_data.dart';
 import 'package:mitso/data/schedule_data.dart';
+import 'package:mitso/interactor/http_get.dart';
 
 const KAF = 'Glavnaya+kafedra';
 const BASE_URL = 'https://mitso.by';
 
 class Parser {
   Future<List<String>> getFakList() async {
-    var html = await http.get(BASE_URL + '/schedule/search');
-    var document = parse(html.body);
+    String reply = await HttpGet().getPage(BASE_URL + '/schedule/search');
+    var document = parse(reply);
     List<Element> fakElementList = document.querySelectorAll('option');
     var fakList = _getTextListFromElementList(fakElementList);
     return fakList;
   }
 
   Future<List<String>> getFormList(String fak) async {
-    var html = await http
-        .get(BASE_URL + '/schedule_update?type=form&kaf=$KAF&fak=$fak');
-    var document = parse(html.body);
+    String reply = await HttpGet()
+        .getPage(BASE_URL + '/schedule_update?type=form&kaf=$KAF&fak=$fak');
+    var document = parse(reply);
     List<Element> formElementList = document.querySelectorAll('option');
     var formList = _getTextListFromElementList(formElementList);
     return formList;
   }
 
   Future<List<String>> getKursList(String form, String fak) async {
-    var html = await http.get(
+    String reply = await HttpGet().getPage(
         BASE_URL + '/schedule_update?type=kurse&kaf=$KAF&form=$form&fak=$fak');
-    var document = parse(html.body);
+    var document = parse(reply);
     List<Element> kursElementList = document.querySelectorAll('option');
     var kursList = _getTextListFromElementList(kursElementList);
     return kursList;
@@ -38,10 +42,10 @@ class Parser {
 
   Future<List<String>> getGroupList(
       String form, String fak, String kurs) async {
-    var html = await http.get(BASE_URL +
+    String reply = await HttpGet().getPage(BASE_URL +
         '/schedule_update?type=group_class&kaf=$KAF&form=$form'
             '&fak=$fak&kurse=$kurs');
-    var document = parse(html.body);
+    var document = parse(reply);
     List<Element> groupElementList = document.querySelectorAll('option');
     var groupList = _getTextListFromElementList(groupElementList);
     return groupList;
@@ -53,10 +57,10 @@ class Parser {
       @material.required String kurs,
       @material.required String group}) async {
     try {
-      var html = await http.get(BASE_URL +
+      String reply = await HttpGet().getPage(BASE_URL +
           '/schedule_update?type=date&kaf=$KAF&form=$form&fak='
               '$fak&kurse=$kurs&group_class=$group');
-      var document = parse(html.body);
+      var document = parse(reply);
       List<Element> groupElementList = document.querySelectorAll('option');
       var groupList = _getTextListFromElementList(groupElementList);
       return groupList;
@@ -65,20 +69,13 @@ class Parser {
     }
   }
 
-  List<String> _getTextListFromElementList(List<Element> elementList) {
-    var resultList = List<String>();
-    for (var i = 0; i < elementList.length; i++)
-      resultList.add(elementList[i].text);
-    return resultList;
-  }
-
   Future<Schedule> getSchedule(
       {UserScheduleInfo userInfo, int week = 0}) async {
     var url = BASE_URL +
         '/schedule/${userInfo.form}/${userInfo.fak}/${userInfo.kurs}/'
             '${userInfo.group}/$week';
-    var html = await http.get(url);
-    var document = parse(html.body);
+    String reply = await HttpGet().getPage(url);
+    var document = parse(reply);
     List<Element> dateEl = document.querySelectorAll('div.rp-ras-data');
     List<Element> dayWeekEl = document.querySelectorAll('div.rp-ras-data2');
     List<Element> dayEl = document.querySelectorAll('div.rp-ras-opis');
@@ -136,8 +133,8 @@ class Parser {
 
   Future<List<PhysicalScheduleData>> getPhysicalEducationSchedule() async {
     final url = BASE_URL + '/raspisanie-zanyatiy-po-fizkulture';
-    var html = await http.get(url);
-    var document = parse(html.body);
+    String reply = await HttpGet().getPage(url);
+    var document = parse(reply);
     List<Element> urlDivEl =
         document.querySelector('div.rp-pol-news').querySelectorAll('a[href]');
     final result = List<PhysicalScheduleData>();
@@ -146,5 +143,12 @@ class Parser {
           text: el.text, url: el.attributes['href'].toString()));
     }
     return result;
+  }
+
+  List<String> _getTextListFromElementList(List<Element> elementList) {
+    var resultList = List<String>();
+    for (var i = 0; i < elementList.length; i++)
+      resultList.add(elementList[i].text);
+    return resultList;
   }
 }

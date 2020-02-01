@@ -10,22 +10,22 @@ dependencies:
   flutter:
     sdk: flutter
 
-  intl: ^0.16.0
+  intl: ^0.16.1
   firebase_messaging: ^6.0.9
-  firebase_analytics: ^5.0.9
-  firebase_crashlytics: ^0.1.2+4
+  firebase_analytics: ^5.0.11
+  firebase_crashlytics: ^0.1.2+5
   firebase_remote_config: ^0.3.0+1
   firebase_admob: ^0.9.0+10
-  http: ^0.12.0+2
+  http: ^0.12.0+4
   html: ^0.14.0+3
-  shared_preferences: ^0.5.6
-  pull_to_refresh: ^1.5.7
+  shared_preferences: ^0.5.6+1
+  pull_to_refresh: ^1.5.8
   url_launcher: ^5.4.1
-  flutter_local_notifications: ^0.9.1
+  flutter_local_notifications: ^1.1.5+1
   rxdart: ^0.23.1
   package_info: ^0.4.0+13
   vibration: ^1.2.2
-  sensors: ^0.4.1+5
+  sensors: ^0.4.1+7
 dev_dependencies:
   flutter_test:
     sdk: flutter

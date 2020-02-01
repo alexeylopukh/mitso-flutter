@@ -77,14 +77,14 @@ packages:
       name: firebase_analytics
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.0.9"
+    version: "5.0.11"
   firebase_crashlytics:
     dependency: "direct main"
     description:
       name: firebase_crashlytics
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.2+4"
+    version: "0.1.2+5"
   firebase_messaging:
     dependency: "direct main"
     description:
@@ -110,7 +110,14 @@ packages:
       name: flutter_local_notifications
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.1+2"
+    version: "1.1.5+1"
+  flutter_local_notifications_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_local_notifications_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -218,7 +225,7 @@ packages:
       name: pull_to_refresh
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.5.7"
+    version: "1.5.8"
   quiver:
     dependency: transitive
     description:
@@ -239,14 +246,14 @@ packages:
       name: sensors
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.1+6"
+    version: "0.4.1+7"
   shared_preferences:
     dependency: "direct main"
     description:
       name: shared_preferences
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.6"
+    version: "0.5.6+1"
   shared_preferences_macos:
     dependency: transitive
     description:
