@@ -15,7 +15,7 @@ const BASE_URL = 'https://mitso.by';
 
 class Parser {
   Future<List<String>> getFakList() async {
-    String reply = await HttpGet().getPage(BASE_URL + '/schedule/search');
+    String reply = await HttpGet().getRequest(BASE_URL + '/schedule/search');
     var document = parse(reply);
     List<Element> fakElementList = document.querySelectorAll('option');
     var fakList = _getTextListFromElementList(fakElementList);
@@ -24,7 +24,7 @@ class Parser {
 
   Future<List<String>> getFormList(String fak) async {
     String reply = await HttpGet()
-        .getPage(BASE_URL + '/schedule_update?type=form&kaf=$KAF&fak=$fak');
+        .getRequest(BASE_URL + '/schedule_update?type=form&kaf=$KAF&fak=$fak');
     var document = parse(reply);
     List<Element> formElementList = document.querySelectorAll('option');
     var formList = _getTextListFromElementList(formElementList);
@@ -32,7 +32,7 @@ class Parser {
   }
 
   Future<List<String>> getKursList(String form, String fak) async {
-    String reply = await HttpGet().getPage(
+    String reply = await HttpGet().getRequest(
         BASE_URL + '/schedule_update?type=kurse&kaf=$KAF&form=$form&fak=$fak');
     var document = parse(reply);
     List<Element> kursElementList = document.querySelectorAll('option');
@@ -42,7 +42,7 @@ class Parser {
 
   Future<List<String>> getGroupList(
       String form, String fak, String kurs) async {
-    String reply = await HttpGet().getPage(BASE_URL +
+    String reply = await HttpGet().getRequest(BASE_URL +
         '/schedule_update?type=group_class&kaf=$KAF&form=$form'
             '&fak=$fak&kurse=$kurs');
     var document = parse(reply);
@@ -57,7 +57,7 @@ class Parser {
       @material.required String kurs,
       @material.required String group}) async {
     try {
-      String reply = await HttpGet().getPage(BASE_URL +
+      String reply = await HttpGet().getRequest(BASE_URL +
           '/schedule_update?type=date&kaf=$KAF&form=$form&fak='
               '$fak&kurse=$kurs&group_class=$group');
       var document = parse(reply);
@@ -74,7 +74,7 @@ class Parser {
     var url = BASE_URL +
         '/schedule/${userInfo.form}/${userInfo.fak}/${userInfo.kurs}/'
             '${userInfo.group}/$week';
-    String reply = await HttpGet().getPage(url);
+    String reply = await HttpGet().getRequest(url);
     var document = parse(reply);
     List<Element> dateEl = document.querySelectorAll('div.rp-ras-data');
     List<Element> dayWeekEl = document.querySelectorAll('div.rp-ras-data2');
@@ -110,8 +110,8 @@ class Parser {
     final url = 'https://student.mitso.by/login_stud.php';
     Map<String, String> body = {'login': login, 'password': password};
     try {
-      var html = await http.post(url, body: body);
-      var document = parse(html.body);
+      var html = await HttpGet().postRequest(url, body: body);
+      var document = parse(html);
       String name = document.querySelector('div.topmenu').text.trim();
       String info = document.querySelector('div [id=what_section]').text.trim();
       List<Element> balanceListEl = document.querySelectorAll('table td');
@@ -133,7 +133,7 @@ class Parser {
 
   Future<List<PhysicalScheduleData>> getPhysicalEducationSchedule() async {
     final url = BASE_URL + '/raspisanie-zanyatiy-po-fizkulture';
-    String reply = await HttpGet().getPage(url);
+    String reply = await HttpGet().getRequest(url);
     var document = parse(reply);
     List<Element> urlDivEl =
         document.querySelector('div.rp-pol-news').querySelectorAll('a[href]');
