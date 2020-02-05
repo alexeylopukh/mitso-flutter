@@ -19,7 +19,10 @@ class WeeksWidgetPresenter {
       status = WeeksStatus.Loading;
       loadWeeks();
     } else {
-      status = WeeksStatus.Loaded;
+      if (weeks.length > 0)
+        status = WeeksStatus.Loaded;
+      else
+        status = WeeksStatus.Empty;
     }
   }
 
@@ -44,7 +47,10 @@ class WeeksWidgetPresenter {
           status = WeeksStatus.Empty;
         else {
           this.weeks = weeks;
-          status = WeeksStatus.Loaded;
+          if (weeks.length > 0)
+            status = WeeksStatus.Loaded;
+          else
+            status = WeeksStatus.Empty;
         }
       }
       view.update();

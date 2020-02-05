@@ -72,7 +72,10 @@ class WeeksWidgetState extends State<WeeksWidget> {
   }
 
   Widget emptyWidget() {
-    return Text('Данные отсутвуют');
+    return Container(
+        height: 200,
+        alignment: Alignment.center,
+        child: Text('Данные отсутвуют'));
   }
 
   Widget errorWidget() {

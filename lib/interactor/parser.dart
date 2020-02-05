@@ -1,10 +1,6 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart' as material;
 import 'package:html/parser.dart';
 import 'package:html/dom.dart';
-import 'package:http/http.dart' as http;
 import 'package:mitso/data/person_info_data.dart';
 import 'package:mitso/data/physical_schedule_data.dart';
 import 'package:mitso/data/schedule_data.dart';
