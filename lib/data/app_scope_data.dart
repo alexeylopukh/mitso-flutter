@@ -59,13 +59,13 @@ class AppScopeData {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (userScheduleInfo == null)
       return prefs.remove('scheduleData').then((_) {
-        state.setState(() => {});
+        state.rebuild();
       });
     else {
       final map = userScheduleInfo.toMap();
       final String json = jsonEncode(map);
       return prefs.setString('scheduleData', json).then((_) {
-        state.setState(() => {});
+        state.rebuild();
       });
     }
   }
@@ -115,11 +115,11 @@ class AppScopeData {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (personInfo == null)
       return prefs.remove('personInfo').then((_) {
-        state.setState(() => {});
+        state.rebuild();
       });
     else
       prefs.setString('personInfo', json.encode(personInfo.toMap())).then((_) {
-        if (auth) state.setState(() => {});
+        if (auth) state.rebuild();
       });
   }
 }
@@ -165,5 +165,9 @@ class AppScopeWidgetState extends State<AppScopeWidget> {
       child: child,
       state: this,
     );
+  }
+
+  rebuild() {
+    if (mounted) setState(() {});
   }
 }

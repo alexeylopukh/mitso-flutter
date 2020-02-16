@@ -4,8 +4,8 @@ import 'package:mitso/interactor/parser.dart';
 import 'package:mitso/presentation/schedule_screen/widgets/schedule_widget/weeks_widget.dart';
 
 class WeeksWidgetPresenter {
-  final WeeksWidgetState view;
-  final AppScopeData appScopeData;
+  WeeksWidgetState view;
+  AppScopeData appScopeData;
   List<String> weeks;
   Parser parser;
   WeeksStatus status;
@@ -60,6 +60,11 @@ class WeeksWidgetPresenter {
   onError(e) {
     print(e);
     status = WeeksStatus.Error;
+  }
+
+  dispose() {
+    view = null;
+    appScopeData = null;
   }
 }
 

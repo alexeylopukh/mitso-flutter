@@ -36,7 +36,7 @@ class BackgroundWidgetState extends State<BackgroundWidget> {
 
   @override
   void dispose() {
-    listener.cancel();
+    listener?.cancel();
     super.dispose();
   }
 }

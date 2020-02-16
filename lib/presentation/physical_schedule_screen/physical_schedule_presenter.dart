@@ -6,8 +6,8 @@ import 'package:mitso/interactor/parser.dart';
 import 'physical_schedule_screen.dart';
 
 class PhysicalSchedulePresenter {
-  final PhysicalScheduleScreenState view;
-  final AppScopeData appScopeData;
+  PhysicalScheduleScreenState view;
+  AppScopeData appScopeData;
 
   PhysicalSchedulePresenter(
       {@required this.view, @required this.appScopeData}) {
@@ -33,6 +33,11 @@ class PhysicalSchedulePresenter {
         view.update();
       }
     });
+  }
+
+  dispose() {
+    view = null;
+    appScopeData = null;
   }
 }
 

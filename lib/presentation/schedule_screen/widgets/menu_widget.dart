@@ -11,9 +11,9 @@ import 'package:mitso/presentation/settings_screen/settings_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MenuWidget extends StatefulWidget {
-  UserScheduleInfo userScheduleInfo;
-  PersonInfo personInfo;
-  ScheduleScreenPresenter presenter;
+  final UserScheduleInfo userScheduleInfo;
+  final PersonInfo personInfo;
+  final ScheduleScreenPresenter presenter;
 
   MenuWidget(
       {@required this.presenter, this.userScheduleInfo, this.personInfo});

@@ -10,8 +10,8 @@ import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ScheduleScreenPresenter {
-  final ScheduleScreenWidgetState view;
-  final AppScopeData appScopeData;
+  ScheduleScreenWidgetState view;
+  AppScopeData appScopeData;
   Parser parser;
   List<String> weekList;
   Schedule schedule;
@@ -39,7 +39,7 @@ class ScheduleScreenPresenter {
     isAdShowed = false;
     appScopeData.adManager.isMainBannerShowedStream.stream.listen((isShowed) {
       isAdShowed = isShowed;
-      view.update();
+      view?.update();
     });
     appScopeData.remoteConfig.then((remoteConfig) {
       appScopeData.adManager.showMainBanner(remoteConfig);
@@ -250,6 +250,11 @@ class ScheduleScreenPresenter {
       default:
         return '';
     }
+  }
+
+  dispose() {
+    view = null;
+    appScopeData = null;
   }
 }
 

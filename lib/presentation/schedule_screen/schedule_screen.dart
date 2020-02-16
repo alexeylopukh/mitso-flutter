@@ -120,7 +120,7 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
   void pageChanged(int index) {
     if (hasVibrator &&
         AppScopeWidget.of(context).appSettings.isVibrationEnabled) {
-      Vibration.vibrate(duration: 5);
+      Vibration.vibrate(duration: 10);
     }
     setState(() {
       selectedPage = index;
@@ -135,8 +135,11 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
     } catch (e) {}
   }
 
+  AppScopeData appScope;
+
   @override
   Widget build(BuildContext context) {
+    appScope = AppScopeWidget.of(context);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor: Theme.of(context).backgroundColor,
         statusBarIconBrightness: Theme.of(context).brightness == Brightness.dark
@@ -402,7 +405,10 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
     );
   }
 
-  forceRefresh() {
+  forceRefresh() async {
+    appScope.remoteConfig.then((c) {
+      appScope.adManager.showFullScreen(c);
+    });
     _refreshController.requestRefresh();
   }
 
@@ -416,7 +422,9 @@ class ScheduleScreenWidgetState extends State<ScheduleScreenWidget> {
 
   @override
   void dispose() {
-    AppScopeWidget.of(context).adManager.hideMainBanner();
+    presenter.dispose();
+    presenter = null;
+    appScope.adManager.hideMainBanner();
     super.dispose();
   }
 }

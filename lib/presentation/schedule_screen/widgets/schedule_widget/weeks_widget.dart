@@ -98,4 +98,11 @@ class WeeksWidgetState extends State<WeeksWidget> {
   update() {
     setState(() {});
   }
+
+  @override
+  void dispose() {
+    presenter.dispose();
+    presenter = null;
+    super.dispose();
+  }
 }

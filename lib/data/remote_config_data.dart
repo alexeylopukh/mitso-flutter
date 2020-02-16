@@ -21,7 +21,9 @@ class RemoteConfigData {
       'android_second_actual_version': packageInfo.version,
       'android_show_ad': false,
     });
-    await remoteConfig.fetch(expiration: const Duration(seconds: 0));
+    await remoteConfig
+        .fetch(expiration: const Duration(seconds: 0))
+        .catchError((_) {});
     await remoteConfig.activateFetched();
     return RemoteConfigData(
       showAd: remoteConfig.getBool('android_show_ad'),

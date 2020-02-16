@@ -97,4 +97,11 @@ class PhysicalScheduleScreenState extends State<PhysicalScheduleScreen> {
               )),
         ));
   }
+
+  @override
+  void dispose() {
+    presenter.dispose();
+    presenter = null;
+    super.dispose();
+  }
 }

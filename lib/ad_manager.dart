@@ -6,6 +6,7 @@ import 'data/remote_config_data.dart';
 class AdManager {
   String _appId = 'ca-app-pub-4272857293285960~2971187629';
   String _mainBlockId = 'ca-app-pub-4272857293285960/3422613768';
+  String _fullScreenId = 'ca-app-pub-4272857293285960/8464147257';
 
   BannerAd mainBanner;
 
@@ -14,6 +15,8 @@ class AdManager {
   StreamController<bool> isMainBannerShowedStream = StreamController<bool>();
   bool isMainBannerShowed = false;
   bool canLaunchAd = true;
+
+  InterstitialAd fullScreenAd;
 
   AdManager() {
     isMainBannerShowedStream.add(false);
@@ -24,6 +27,12 @@ class AdManager {
       contentUrl: 'https://www.mitso.by',
       childDirected: false,
     );
+
+    fullScreenAd = InterstitialAd(
+      adUnitId: _fullScreenId,
+      targetingInfo: targetingInfo,
+    );
+    _loadFullScreen();
   }
 
   showMainBanner(RemoteConfigData remoteConfigData) {
@@ -66,10 +75,29 @@ class AdManager {
         if (result && isMainBannerShowed && canLaunchAd)
           mainBanner.show(anchorOffset: 60.0).then((_) {
             print('showed');
-            if (!isMainBannerShowed && !canLaunchAd) hideMainBanner();
+            if (!isMainBannerShowed && !canLaunchAd)
+              hideMainBanner();
+            else
+              isMainBannerShowedStream.sink.add(true);
           });
       });
     });
+  }
+
+  showFullScreen(RemoteConfigData remoteConfigData) async {
+    if (!remoteConfigData.showAd) {
+      return;
+    }
+    if (await fullScreenAd.isLoaded()) {
+      fullScreenAd.show();
+    } else {
+      await _loadFullScreen();
+      fullScreenAd.show();
+    }
+  }
+
+  Future _loadFullScreen() async {
+    return fullScreenAd.load();
   }
 
   hideMainBanner({bool repeat = true}) async {
