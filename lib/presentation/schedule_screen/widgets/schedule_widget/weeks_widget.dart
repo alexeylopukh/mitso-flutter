@@ -20,9 +20,7 @@ class WeeksWidgetState extends State<WeeksWidget> {
   Widget build(BuildContext context) {
     if (presenter == null)
       presenter = WeeksWidgetPresenter(
-          view: this,
-          appScopeData: AppScopeWidget.of(context),
-          weeks: widget.weeks);
+          view: this, appScopeData: AppScopeWidget.of(context), weeks: widget.weeks);
     return generateBody();
   }
 
@@ -45,8 +43,7 @@ class WeeksWidgetState extends State<WeeksWidget> {
         child: OutlineButton(
           borderSide: BorderSide(color: FONT_COLOR_2, width: 2),
           shape: StadiumBorder(),
-          child: Text(weekName,
-              style: TextStyle(color: FONT_COLOR_2, fontSize: 18)),
+          child: Text(weekName, style: TextStyle(color: FONT_COLOR_2, fontSize: 18)),
           onPressed: () {
             int week;
             try {
@@ -66,16 +63,18 @@ class WeeksWidgetState extends State<WeeksWidget> {
 
   Widget loadingWidget() {
     return Center(
-      child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(MAIN_COLOR_2)),
+      child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(MAIN_COLOR_2)),
     );
   }
 
   Widget emptyWidget() {
     return Container(
-        height: 200,
+        height: 150,
         alignment: Alignment.center,
-        child: Text('Данные отсутвуют'));
+        child: Text(
+          'Данные отсутвуют :(',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ));
   }
 
   Widget errorWidget() {
@@ -86,8 +85,7 @@ class WeeksWidgetState extends State<WeeksWidget> {
         OutlineButton(
             borderSide: BorderSide(color: FONT_COLOR_2, width: 2),
             shape: StadiumBorder(),
-            child: Text('Повторить попытку',
-                style: TextStyle(color: FONT_COLOR_2, fontSize: 18)),
+            child: Text('Повторить попытку', style: TextStyle(color: FONT_COLOR_2, fontSize: 18)),
             onPressed: () {
               presenter.updateWeeks();
             })
