@@ -10,14 +10,9 @@ class Themes {
     backgroundColor: Color(0xff1E212A),
     cardColor: Color(0xff333742),
     accentTextTheme: TextTheme(
-        title: TextStyle(
-            fontFamily: 'Montserrat-bold',
-            color: Color(0xffAEADB0),
-            fontSize: 16),
-        body1: TextStyle(
-            fontFamily: 'Montserrat-Light',
-            color: Color(0xffAEADB0),
-            fontSize: 13)),
+        headline6: TextStyle(fontFamily: 'Montserrat-bold', color: Color(0xffAEADB0), fontSize: 16),
+        bodyText2:
+            TextStyle(fontFamily: 'Montserrat-Light', color: Color(0xffAEADB0), fontSize: 13)),
   );
 
   static final ThemeData light = ThemeData(
@@ -25,12 +20,8 @@ class Themes {
       buttonColor: Color(0xff4373F3),
       backgroundColor: Color(0xffF1F5FF),
       accentTextTheme: TextTheme(
-          title: TextStyle(
-              fontFamily: 'Montserrat-bold',
-              color: Color(0xff515F79),
-              fontSize: 16),
-          body1: TextStyle(
-              fontFamily: 'Montserrat-Light',
-              color: Color(0xff515F79),
-              fontSize: 13)));
+          headline6:
+              TextStyle(fontFamily: 'Montserrat-bold', color: Color(0xff515F79), fontSize: 16),
+          bodyText2:
+              TextStyle(fontFamily: 'Montserrat-Light', color: Color(0xff515F79), fontSize: 13)));
 }

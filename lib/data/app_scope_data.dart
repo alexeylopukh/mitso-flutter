@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:mitso/ad_manager.dart';
 import 'package:mitso/data/app_settings.dart';
@@ -50,8 +51,7 @@ class AppScopeData {
   }
 
   Future<RemoteConfigData> get remoteConfig async {
-    if (_remoteConfig == null)
-      _remoteConfig = await RemoteConfigData.setupRemoteConfig();
+    if (_remoteConfig == null) _remoteConfig = await RemoteConfigData.setupRemoteConfig();
     return _remoteConfig;
   }
 
@@ -126,11 +126,14 @@ class AppScopeData {
 
 class _AppScopeWidget extends InheritedWidget {
   final AppScopeWidgetState state;
-  AppScopeData data;
+  final AppScopeData data;
 
-  _AppScopeWidget({Key key, @required Widget child, @required this.state})
-      : super(key: key, child: child) {
-    data = AppScopeData(state: state);
+  _AppScopeWidget._(Key key, Widget child, this.state, this.data) : super(key: key, child: child) {
+    // data = AppScopeData(state: state);
+  }
+
+  factory _AppScopeWidget({Key key, @required Widget child, @required AppScopeWidgetState state}) {
+    return _AppScopeWidget._(key, child, state, AppScopeData(state: state));
   }
 
   @override

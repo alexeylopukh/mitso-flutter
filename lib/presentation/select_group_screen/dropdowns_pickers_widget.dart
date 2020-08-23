@@ -27,8 +27,7 @@ class DropDownsPickersState extends State<DropDownsPickers> {
   final decoration = ShapeDecoration(
     color: MAIN_COLOR_2,
     shape: RoundedRectangleBorder(
-      side:
-          BorderSide(width: 2.0, style: BorderStyle.solid, color: Colors.white),
+      side: BorderSide(width: 2.0, style: BorderStyle.solid, color: Colors.white),
       borderRadius: BorderRadius.all(Radius.circular(8.0)),
     ),
   );
@@ -43,8 +42,7 @@ class DropDownsPickersState extends State<DropDownsPickers> {
   @override
   Widget build(BuildContext context) {
     return Theme(
-      data: Theme.of(context)
-          .copyWith(canvasColor: MAIN_COLOR_2, accentColor: Colors.white),
+      data: Theme.of(context).copyWith(canvasColor: MAIN_COLOR_2, accentColor: Colors.white),
       child: Padding(
         padding: EdgeInsets.only(left: 40, right: 40, top: 40),
         child: Center(
@@ -54,10 +52,16 @@ class DropDownsPickersState extends State<DropDownsPickers> {
             children: <Widget>[
               FutureBuilder(
                 future: widget.parser.getFakList(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<String>> snapshot) {
+                builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
                   if (!snapshot.hasData) return CircularProgressIndicator();
-                  if (snapshot.data == null) return Text('No data');
+                  if (snapshot?.data?.isEmpty ?? true)
+                    return Center(
+                      child: Text(
+                        'Расписание отсутствует :(',
+                        style: TextStyle(
+                            color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),
+                      ),
+                    );
                   return Container(
                     width: double.infinity,
                     decoration: decoration,
@@ -78,8 +82,7 @@ class DropDownsPickersState extends State<DropDownsPickers> {
                               group = null;
                             });
                           },
-                          items: snapshot.data
-                              .map<DropdownMenuItem<String>>((String value) {
+                          items: snapshot.data.map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
                               child: Text(value, style: menuItemStyle),
@@ -95,10 +98,8 @@ class DropDownsPickersState extends State<DropDownsPickers> {
                     ? Container()
                     : FutureBuilder(
                         future: widget.parser.getFormList(fakulty),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<List<String>> snapshot) {
-                          if (!snapshot.hasData)
-                            return CircularProgressIndicator();
+                        builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+                          if (!snapshot.hasData) return CircularProgressIndicator();
                           if (snapshot.data == null) return Text('No data');
                           return Container(
                             decoration: decoration,
@@ -109,8 +110,7 @@ class DropDownsPickersState extends State<DropDownsPickers> {
                                   style: textStyle,
                                   icon: icon,
                                   value: form == null ? null : form,
-                                  hint: Center(
-                                      child: Text(FORM_HINT, style: hintStyle)),
+                                  hint: Center(child: Text(FORM_HINT, style: hintStyle)),
                                   onChanged: (String value) {
                                     setState(() {
                                       form = value;
@@ -118,13 +118,10 @@ class DropDownsPickersState extends State<DropDownsPickers> {
                                       group = null;
                                     });
                                   },
-                                  items: snapshot.data
-                                      .map<DropdownMenuItem<String>>(
-                                          (String value) {
+                                  items:
+                                      snapshot.data.map<DropdownMenuItem<String>>((String value) {
                                     return DropdownMenuItem<String>(
-                                        value: value,
-                                        child:
-                                            Text(value, style: menuItemStyle));
+                                        value: value, child: Text(value, style: menuItemStyle));
                                   }).toList()),
                             ),
                           );
@@ -137,10 +134,8 @@ class DropDownsPickersState extends State<DropDownsPickers> {
                     ? Container()
                     : FutureBuilder(
                         future: widget.parser.getKursList(form, fakulty),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<List<String>> snapshot) {
-                          if (!snapshot.hasData)
-                            return CircularProgressIndicator();
+                        builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+                          if (!snapshot.hasData) return CircularProgressIndicator();
                           if (snapshot.data == null) return Text('No data');
                           return Container(
                             decoration: decoration,
@@ -151,17 +146,15 @@ class DropDownsPickersState extends State<DropDownsPickers> {
                                   style: textStyle,
                                   icon: icon,
                                   value: cours == null ? null : cours,
-                                  hint: Center(
-                                      child: Text(KURS_HINT, style: hintStyle)),
+                                  hint: Center(child: Text(KURS_HINT, style: hintStyle)),
                                   onChanged: (String value) {
                                     setState(() {
                                       cours = value;
                                       group = null;
                                     });
                                   },
-                                  items: snapshot.data
-                                      .map<DropdownMenuItem<String>>(
-                                          (String value) {
+                                  items:
+                                      snapshot.data.map<DropdownMenuItem<String>>((String value) {
                                     return DropdownMenuItem<String>(
                                       value: value,
                                       child: Text(
@@ -180,12 +173,9 @@ class DropDownsPickersState extends State<DropDownsPickers> {
                 child: cours == null
                     ? Container()
                     : FutureBuilder(
-                        future:
-                            widget.parser.getGroupList(form, fakulty, cours),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<List<String>> snapshot) {
-                          if (!snapshot.hasData)
-                            return CircularProgressIndicator();
+                        future: widget.parser.getGroupList(form, fakulty, cours),
+                        builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+                          if (!snapshot.hasData) return CircularProgressIndicator();
                           if (snapshot.data == null) return Text('No data');
                           return Container(
                             decoration: decoration,
@@ -206,9 +196,8 @@ class DropDownsPickersState extends State<DropDownsPickers> {
                                       group = value;
                                     });
                                   },
-                                  items: snapshot.data
-                                      .map<DropdownMenuItem<String>>(
-                                          (String value) {
+                                  items:
+                                      snapshot.data.map<DropdownMenuItem<String>>((String value) {
                                     return DropdownMenuItem<String>(
                                       value: value,
                                       child: Text(value, style: menuItemStyle),

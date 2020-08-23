@@ -20,10 +20,8 @@ class PageItemWidget extends StatelessWidget {
                     child: Center(
                         child: Text(
                     "Занятия отсутсвуют",
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: FONT_COLOR_2),
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: FONT_COLOR_2),
                   )))
                 : ListView.builder(
                     controller: controller,
@@ -60,19 +58,19 @@ class PageItemWidget extends StatelessWidget {
               children: <Widget>[
                 Text(
                   lesson.time,
-                  style: Theme.of(context).accentTextTheme.title,
+                  style: Theme.of(context).accentTextTheme.headline6,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 2),
                   child: Text(lesson.lesson,
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).accentTextTheme.body1),
+                      style: Theme.of(context).accentTextTheme.bodyText2),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 3),
                   child: Text(
                     lesson.aud,
-                    style: Theme.of(context).accentTextTheme.title,
+                    style: Theme.of(context).accentTextTheme.headline6,
                   ),
                 )
               ],
