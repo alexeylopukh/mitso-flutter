@@ -50,10 +50,10 @@ class SelectGroupScreen extends StatelessWidget {
                     icon: const Icon(Icons.done, color: MAIN_COLOR_2),
                     label: const Text(BUTTON_TEXT, style: TextStyle(color: MAIN_COLOR_2)),
                     onPressed: () {
-                      final form = dropDownKey.currentState.form ?? "";
-                      final fak = dropDownKey.currentState.fakulty ?? "";
-                      final kurs = dropDownKey.currentState.cours ?? "";
-                      final group = dropDownKey.currentState.group ?? "";
+                      final form = dropDownKey.currentState.form;
+                      final fak = dropDownKey.currentState.fakulty;
+                      final kurs = dropDownKey.currentState.cours;
+                      final group = dropDownKey.currentState.group;
 
                       if (form == null || fak == null || kurs == null || group == null) {
                         _key.currentState.showBottomSheet(
