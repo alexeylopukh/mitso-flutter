@@ -25,7 +25,7 @@ class PageItemWidget extends StatelessWidget {
                   )))
                 : ListView.builder(
                     controller: controller,
-                    padding: EdgeInsets.zero,
+                    padding: EdgeInsets.only(bottom: 100),
                     shrinkWrap: true,
                     itemBuilder: (context, position) {
                       if (day.lessons[position].aud != null)
