@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart' as material;
-import 'package:html/parser.dart';
 import 'package:html/dom.dart';
+import 'package:html/parser.dart';
 import 'package:mitso/data/person_info_data.dart';
 import 'package:mitso/data/physical_schedule_data.dart';
 import 'package:mitso/data/schedule_data.dart';
@@ -19,8 +19,8 @@ class Parser {
   }
 
   Future<List<String>> getFormList(String fak) async {
-    String reply = await HttpGet()
-        .getRequest(BASE_URL + '/schedule_update?type=form&kaf=$KAF&fak=$fak');
+    String reply =
+        await HttpGet().getRequest(BASE_URL + '/schedule_update?type=form&kaf=$KAF&fak=$fak');
     var document = parse(reply);
     List<Element> formElementList = document.querySelectorAll('option');
     var formList = _getTextListFromElementList(formElementList);
@@ -28,16 +28,15 @@ class Parser {
   }
 
   Future<List<String>> getKursList(String form, String fak) async {
-    String reply = await HttpGet().getRequest(
-        BASE_URL + '/schedule_update?type=kurse&kaf=$KAF&form=$form&fak=$fak');
+    String reply = await HttpGet()
+        .getRequest(BASE_URL + '/schedule_update?type=kurse&kaf=$KAF&form=$form&fak=$fak');
     var document = parse(reply);
     List<Element> kursElementList = document.querySelectorAll('option');
     var kursList = _getTextListFromElementList(kursElementList);
     return kursList;
   }
 
-  Future<List<String>> getGroupList(
-      String form, String fak, String kurs) async {
+  Future<List<String>> getGroupList(String form, String fak, String kurs) async {
     String reply = await HttpGet().getRequest(BASE_URL +
         '/schedule_update?type=group_class&kaf=$KAF&form=$form'
             '&fak=$fak&kurse=$kurs');
@@ -65,8 +64,7 @@ class Parser {
     }
   }
 
-  Future<Schedule> getSchedule(
-      {UserScheduleInfo userInfo, int week = 0}) async {
+  Future<Schedule> getSchedule({UserScheduleInfo userInfo, int week = 0}) async {
     var url = BASE_URL +
         '/schedule/${userInfo.form}/${userInfo.fak}/${userInfo.kurs}/'
             '${userInfo.group}/$week';
@@ -87,14 +85,9 @@ class Parser {
       for (var lesson = 0; lesson < timeEl.length; lesson++) {
         if (audEl.length > lesson)
           lessons.add(Lesson(
-              time: timeEl[lesson].text,
-              lesson: lessonEl[lesson].text,
-              aud: audEl[lesson].text));
+              time: timeEl[lesson].text, lesson: lessonEl[lesson].text, aud: audEl[lesson].text));
         else
-          lessons.add(Lesson(
-              time: timeEl[lesson].text,
-              lesson: lessonEl[lesson].text,
-              aud: ''));
+          lessons.add(Lesson(time: timeEl[lesson].text, lesson: lessonEl[lesson].text, aud: ''));
       }
 
       days.add(Day(dateEl[day].text, dayWeekEl[day].text, lessons));
@@ -109,11 +102,14 @@ class Parser {
       var html = await HttpGet().postRequest(url, body: body);
       var document = parse(html);
       String name = document.querySelector('div.topmenu').text.trim();
-      String info = document.querySelector('div [id=what_section]').text.trim();
+      String info = document.querySelector('div [id=what_section]')?.text?.trim() ?? "";
       List<Element> balanceListEl = document.querySelectorAll('table td');
       double balance = double.parse(balanceListEl[1].text);
       double debt = double.parse(balanceListEl[3].text);
       double fine = double.parse(balanceListEl[5].text);
+      info = info.replaceAll(':', '');
+      info = info.replaceAll('\n', '');
+      info = info.replaceAll('\t', '');
       return PersonInfo(
           name: name,
           info: info,
@@ -131,20 +127,17 @@ class Parser {
     final url = BASE_URL + '/raspisanie-zanyatiy-po-fizkulture';
     String reply = await HttpGet().getRequest(url);
     var document = parse(reply);
-    List<Element> urlDivEl =
-        document.querySelector('div.rp-pol-news').querySelectorAll('a[href]');
+    List<Element> urlDivEl = document.querySelector('div.rp-pol-news').querySelectorAll('a[href]');
     final result = List<PhysicalScheduleData>();
     for (Element el in urlDivEl) {
-      result.add(PhysicalScheduleData(
-          text: el.text, url: el.attributes['href'].toString()));
+      result.add(PhysicalScheduleData(text: el.text, url: el.attributes['href'].toString()));
     }
     return result;
   }
 
   List<String> _getTextListFromElementList(List<Element> elementList) {
     var resultList = List<String>();
-    for (var i = 0; i < elementList.length; i++)
-      resultList.add(elementList[i].text);
+    for (var i = 0; i < elementList.length; i++) resultList.add(elementList[i].text);
     return resultList;
   }
 }

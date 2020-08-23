@@ -2,8 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
-PersonInfo personInfoFromJson(String str) =>
-    PersonInfo.fromMap(json.decode(str));
+PersonInfo personInfoFromJson(String str) => PersonInfo.fromMap(json.decode(str));
 
 String personInfoToJson(PersonInfo data) => json.encode(data.toMap());
 

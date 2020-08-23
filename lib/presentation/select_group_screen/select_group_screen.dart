@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:mitso/data/app_scope_data.dart';
 import 'package:mitso/data/schedule_data.dart';
 import 'package:mitso/presentation/select_group_screen/dropdowns_pickers_widget.dart';
+
 import '../../app_theme.dart';
 
 const BUTTON_TEXT = 'Найти расписание';
@@ -32,42 +33,34 @@ class SelectGroupScreen extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 40, left: 40),
                     child: Text(
                       TITLE_TEXT,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold),
                     ),
                   ),
                   DropDownsPickers(key: dropDownKey)
                 ],
               ),
             ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
             floatingActionButton: Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: FloatingActionButton.extended(
                     elevation: 4.0,
                     backgroundColor: Colors.white,
                     icon: const Icon(Icons.done, color: MAIN_COLOR_2),
-                    label: const Text(BUTTON_TEXT,
-                        style: TextStyle(color: MAIN_COLOR_2)),
+                    label: const Text(BUTTON_TEXT, style: TextStyle(color: MAIN_COLOR_2)),
                     onPressed: () {
-                      final form = dropDownKey.currentState.form;
-                      final fak = dropDownKey.currentState.fakulty;
-                      final kurs = dropDownKey.currentState.cours;
-                      final group = dropDownKey.currentState.group;
+                      final form = dropDownKey.currentState.form ?? "";
+                      final fak = dropDownKey.currentState.fakulty ?? "";
+                      final kurs = dropDownKey.currentState.cours ?? "";
+                      final group = dropDownKey.currentState.group ?? "";
 
-                      if (form == null ||
-                          fak == null ||
-                          kurs == null ||
-                          group == null) {
+                      if (form == null || fak == null || kurs == null || group == null) {
                         _key.currentState.showBottomSheet(
                             (_) => SizedBox(
                                   child: Container(
-                                      decoration: BoxDecoration(
-                                          color: Theme.of(context)
-                                              .backgroundColor),
+                                      decoration:
+                                          BoxDecoration(color: Theme.of(context).backgroundColor),
                                       child: Center(
                                           child: Text('Заполните все данные',
                                               style: TextStyle(
@@ -79,14 +72,12 @@ class SelectGroupScreen extends StatelessWidget {
                                 ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(10),
-                                  topRight: Radius.circular(10)),
+                                  topLeft: Radius.circular(10), topRight: Radius.circular(10)),
                             ));
                         return;
                       }
                       AppScopeWidget.of(context).setUserScheduleInfo(
-                          UserScheduleInfo(
-                              form: form, fak: fak, kurs: kurs, group: group));
+                          UserScheduleInfo(form: form, fak: fak, kurs: kurs, group: group));
                     }))),
       ),
     );

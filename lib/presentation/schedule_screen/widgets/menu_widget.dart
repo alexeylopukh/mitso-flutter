@@ -15,8 +15,7 @@ class MenuWidget extends StatefulWidget {
   final PersonInfo personInfo;
   final ScheduleScreenPresenter presenter;
 
-  MenuWidget(
-      {@required this.presenter, this.userScheduleInfo, this.personInfo});
+  MenuWidget({@required this.presenter, this.userScheduleInfo, this.personInfo});
 
   @override
   State<StatefulWidget> createState() {
@@ -40,26 +39,24 @@ class MenuWidgetState extends State<MenuWidget> {
             child: Container(
               height: 4,
               width: 60,
-              decoration: BoxDecoration(
-                  color: Colors.grey, borderRadius: BorderRadius.circular(20)),
+              decoration:
+                  BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(20)),
             ),
           ),
           personInfo == null
               ? RaisedButton(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => AuthScreen())),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  onPressed: () => Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) => AuthScreen())),
                   padding: const EdgeInsets.all(0),
                   child: Ink(
                     decoration: BoxDecoration(
                         gradient: LinearGradient(
                             begin: Alignment.topRight,
                             end: Alignment.bottomLeft,
-                            colors:
-                                Theme.of(context).brightness == Brightness.dark
-                                    ? [Color(0xff1E212A), Color(0xff1E212A)]
-                                    : [Color(0xff4373F3), Color(0xff3E6AE3)]),
+                            colors: Theme.of(context).brightness == Brightness.dark
+                                ? [Color(0xff1E212A), Color(0xff1E212A)]
+                                : [Color(0xff4373F3), Color(0xff3E6AE3)]),
                         borderRadius: BorderRadius.circular(10)),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -73,8 +70,7 @@ class MenuWidgetState extends State<MenuWidget> {
                 )
               : getUserCard(),
           RaisedButton(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => PhysicalScheduleScreen()),
@@ -100,9 +96,8 @@ class MenuWidgetState extends State<MenuWidget> {
             ),
           ),
           RaisedButton(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            onPressed: () => _launchURL('https://t.me/DirtyAlex'),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            onPressed: () => _launchURL('https://t.me/AlexeyL13'),
             padding: const EdgeInsets.all(0),
             child: Ink(
               decoration: BoxDecoration(
@@ -127,8 +122,7 @@ class MenuWidgetState extends State<MenuWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               RaisedButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 onPressed: () {
                   presenter.appScopeData.setSchedule(null);
                   presenter.appScopeData.setUserScheduleInfo(null);
@@ -139,18 +133,16 @@ class MenuWidgetState extends State<MenuWidget> {
                       gradient: LinearGradient(
                           begin: Alignment.topRight,
                           end: Alignment.bottomLeft,
-                          colors:
-                              Theme.of(context).brightness == Brightness.dark
-                                  ? [Color(0xff1E212A), Color(0xff1E212A)]
-                                  : [Color(0xff4373F3), Color(0xff3E6AE3)]),
+                          colors: Theme.of(context).brightness == Brightness.dark
+                              ? [Color(0xff1E212A), Color(0xff1E212A)]
+                              : [Color(0xff4373F3), Color(0xff3E6AE3)]),
                       borderRadius: BorderRadius.circular(10)),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       children: <Widget>[
                         Padding(
-                          padding: const EdgeInsets.only(
-                              top: 5, bottom: 5, right: 10),
+                          padding: const EdgeInsets.only(top: 5, bottom: 5, right: 10),
                           child: Icon(
                             Icons.exit_to_app,
                             color: Colors.white,
@@ -158,37 +150,32 @@ class MenuWidgetState extends State<MenuWidget> {
                         ),
                         Text(userScheduleInfo.group + ' ',
                             style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold)),
+                                color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                       ],
                     ),
                   ),
                 ),
               ),
               RaisedButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => SettingsScreen())),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                onPressed: () => Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => SettingsScreen())),
                 padding: const EdgeInsets.all(0),
                 child: Ink(
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
                           begin: Alignment.topRight,
                           end: Alignment.bottomLeft,
-                          colors:
-                              Theme.of(context).brightness == Brightness.dark
-                                  ? [Color(0xff1E212A), Color(0xff1E212A)]
-                                  : [Color(0xff4373F3), Color(0xff3E6AE3)]),
+                          colors: Theme.of(context).brightness == Brightness.dark
+                              ? [Color(0xff1E212A), Color(0xff1E212A)]
+                              : [Color(0xff4373F3), Color(0xff3E6AE3)]),
                       borderRadius: BorderRadius.circular(10)),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       children: <Widget>[
                         Padding(
-                          padding: const EdgeInsets.only(
-                              top: 5, bottom: 5, right: 10),
+                          padding: const EdgeInsets.only(top: 5, bottom: 5, right: 10),
                           child: Icon(
                             Icons.settings,
                             color: Colors.white,
@@ -196,9 +183,7 @@ class MenuWidgetState extends State<MenuWidget> {
                         ),
                         Text('Настройки',
                             style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold)),
+                                color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
                       ],
                     ),
                   ),
@@ -231,8 +216,7 @@ class MenuWidgetState extends State<MenuWidget> {
               child: Column(
                 children: <Widget>[
                   Padding(
-                    padding:
-                        const EdgeInsets.only(left: 20, right: 20, top: 20),
+                    padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -240,9 +224,7 @@ class MenuWidgetState extends State<MenuWidget> {
                             child: Text(
                           'MITSO',
                           style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
+                              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
                         )),
                         Image.asset(
                           'assets/images/chip.png',
@@ -301,8 +283,7 @@ class MenuWidgetState extends State<MenuWidget> {
                   Align(
                     alignment: Alignment.bottomLeft,
                     child: Padding(
-                        padding:
-                            EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                        padding: EdgeInsets.only(left: 20, right: 20, bottom: 10),
                         child: Container(
                             child: Text(
                           personInfo.name,
@@ -312,7 +293,13 @@ class MenuWidgetState extends State<MenuWidget> {
                 ],
               )),
         ),
-        Text('Обновлено ' + getTextFromDate(personInfo.lastUpdate))
+        Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Text(
+            personInfo.info,
+            textAlign: TextAlign.center,
+          ),
+        )
       ],
     );
   }
